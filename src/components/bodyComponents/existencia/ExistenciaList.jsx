@@ -1,7 +1,9 @@
 import { Component } from "react";
-import { Avatar, Box, Typography, Chip } from "@mui/material";
+import { Avatar, Box, Typography, Chip, IconButton, Tooltip } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
+import { Edit, Visibility, Inventory, QrCode, LocalShipping, Assignment, Inventory2 } from "@mui/icons-material";
 import { existencias } from "./Existencias";
+import { unidadesCarga } from "../guiaCarga/UnidadesCarga";
 import ExistenciaDetailsModal from "./ExistenciaDetailsModal";
 
 export default class ExistenciaList extends Component {
@@ -33,85 +35,190 @@ export default class ExistenciaList extends Component {
     }
   };
 
+  getEstadoColor = (estado) => {
+    switch (estado) {
+      case 'NACIONALIZADO':
+        return 'success';
+      case 'NO_NACIONALIZADO':
+        return 'warning';
+      default:
+        return 'default';
+    }
+  };
+
   render() {
-         const columns = [
-       {
-         field: "guiaCarga",
-         headerName: "Guía de Carga",
-         width: 180,
-         description: "Guía de carga asociada",
-         valueGetter: (params) => params.row.guiaCarga?.numero_guia || params.row.guiaCarga?.factura_comercial || "N/A",
-       },
-       {
-         field: "cliente",
-         headerName: "Cliente",
-         width: 200,
-         description: "Cliente propietario",
-         valueGetter: (params) => params.row.cliente?.razon_social || params.row.cliente?.nombre || "N/A",
-       },
-       {
-         field: "producto",
-         headerName: "Producto",
-         width: 250,
-         description: "Producto asociado",
-         renderCell: (params) => {
-           return (
-             <>
-               <Avatar
-                 alt="Producto"
-                 variant="square"
-                 sx={{ borderRadius: 1, width: 30, height: 30, backgroundColor: 'primary.main' }}
-               >
-                 P
-               </Avatar>
-               <Typography variant="subtitle2" sx={{ mx: 3 }}>
-                 {params.row.producto?.nombre || "N/A"}
-               </Typography>
-             </>
-           );
-         },
-       },
-       {
-         field: "cantidad",
-         headerName: "Cantidad Total",
-         width: 130,
-         description: "Cantidad total de unidades",
-         type: 'number',
-       },
-       {
-         field: "cantidad_nacionalizado",
-         headerName: "Nacionalizado",
-         width: 130,
-         description: "Cantidad nacionalizada",
-         type: 'number',
-       },
-       {
-         field: "cantidad_no_nacionalizado",
-         headerName: "No Nacionalizado",
-         width: 140,
-         description: "Cantidad no nacionalizada",
-         type: 'number',
-       },
-       {
-         field: "espacio_ocupado",
-         headerName: "Espacio Ocupado",
-         width: 150,
-                 description: "Espacio ocupado en m²",
-        type: 'number',
-        valueGetter: (params) => `${params.value} m²`,
-       },
-       {
-         field: "bodega",
-         headerName: "Bodega",
-         width: 150,
-         description: "Bodega donde se almacena",
-         valueGetter: (params) => params.row.bodega?.nombre || "N/A",
-       },
-     ];
+    const columns = [
+      {
+        field: "serial",
+        headerName: "Serial",
+        width: 200,
+        description: "Serial único de la unidad",
+        renderCell: (params) => {
+          return (
+            <>
+              <Avatar
+                alt="Existencia"
+                variant="square"
+                sx={{ borderRadius: 1, width: 30, height: 30, backgroundColor: 'primary.main' }}
+              >
+                <QrCode sx={{ fontSize: 16 }} />
+              </Avatar>
+              <Typography variant="subtitle2" sx={{ mx: 3, fontFamily: 'monospace' }}>
+                {params.value}
+              </Typography>
+            </>
+          );
+        },
+      },
+      {
+        field: "producto",
+        headerName: "Producto",
+        width: 200,
+        description: "Producto asociado",
+        renderCell: (params) => {
+          const producto = params.row.producto;
+          return (
+            <Typography variant="subtitle2" fontWeight="medium">
+              {producto?.nombre || "N/A"}
+            </Typography>
+          );
+        },
+      },
+      {
+        field: "estado",
+        headerName: "Estado",
+        width: 130,
+        description: "Estado de nacionalización",
+        renderCell: (params) => {
+          const color = this.getEstadoColor(params.value);
+          return (
+            <Chip
+              label={params.value?.replace('_', ' ') || "Sin estado"}
+              color={color}
+              size="small"
+              variant="filled"
+              sx={{ fontWeight: 'medium' }}
+            />
+          );
+        },
+      },
+      {
+        field: "cliente",
+        headerName: "Cliente",
+        width: 180,
+        description: "Cliente propietario",
+        renderCell: (params) => {
+          const cliente = params.row.cliente;
+          return (
+            <Typography variant="body2">
+              {cliente?.razon_social || "N/A"}
+            </Typography>
+          );
+        },
+      },
+      {
+        field: "bodega",
+        headerName: "Bodega",
+        width: 150,
+        description: "Bodega donde se almacena",
+        renderCell: (params) => {
+          const bodega = params.row.bodega;
+          return (
+            <Typography variant="body2">
+              {bodega?.nombre || "N/A"}
+            </Typography>
+          );
+        },
+      },
+                 {
+               field: "unidadCarga",
+               headerName: "Unidad de Carga",
+               width: 140,
+               description: "Unidad de carga asociada",
+               renderCell: (params) => {
+                   const unidadCarga = params.row.UNIDAD_DE_CARGA_idUnidad 
+                       ? unidadesCarga.find(u => u.idUnidad === params.row.UNIDAD_DE_CARGA_idUnidad)
+                       : null;
+                   
+                   return (
+                       <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                           <Inventory2 sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
+                           <Typography variant="body2">
+                               {unidadCarga ? unidadCarga.idUnidad : "N/A"}
+                           </Typography>
+                       </Box>
+                   );
+               },
+           },
+      {
+        field: "guiaCarga",
+        headerName: "Guía de Carga",
+        width: 150,
+        description: "Guía de carga asociada",
+        renderCell: (params) => {
+          const guia = params.row.guiaCarga;
+          return (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+              <Assignment sx={{ mr: 1, fontSize: 16, color: 'text.secondary' }} />
+              <Typography variant="body2">
+                {guia?.factura_comercial || "N/A"}
+              </Typography>
+            </Box>
+          );
+        },
+      },
+      {
+        field: "actions",
+        headerName: "Acciones",
+        width: 120,
+        sortable: false,
+        filterable: false,
+        renderCell: (params) => (
+          <Box sx={{ display: 'flex', gap: 0.5 }}>
+            <Tooltip title="Ver detalles">
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.handleRowClick(params);
+                }}
+                sx={{ 
+                  color: 'text.secondary',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    color: 'text.primary'
+                  }
+                }}
+              >
+                <Visibility />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Editar">
+              <IconButton
+                size="small"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  this.handleEditExistencia(params.row);
+                }}
+                sx={{ 
+                  color: 'text.secondary',
+                  '&:hover': {
+                    backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                    color: 'text.primary'
+                  }
+                }}
+              >
+                <Edit />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        ),
+      },
+    ];
 
     const rows = existencias.map(existencia => ({
       ...existencia,
-      id: existencia.idExistencia // DataGrid necesita un campo 'id' único
+      id: existencia.idExistencia
     }));
 
     return (
@@ -127,6 +234,7 @@ export default class ExistenciaList extends Component {
         <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "primary.main" }}>
           Gestión de Existencias
         </Typography>
+        
         <DataGrid
           sx={{
             borderLeft: 0,
@@ -150,12 +258,20 @@ export default class ExistenciaList extends Component {
             pagination: {
               paginationModel: { page: 0, pageSize: 10 },
             },
+            sorting: {
+              sortModel: [{ field: 'idExistencia', sort: 'desc' }],
+            },
           }}
           pageSizeOptions={[10, 15, 20, 30]}
           rowSelection={false}
           disableRowSelectionOnClick
           autoHeight
           onRowClick={this.handleRowClick}
+          getRowClassName={(params) => {
+            if (params.row.estado === 'NACIONALIZADO') return 'success-row';
+            if (params.row.estado === 'NO_NACIONALIZADO') return 'warning-row';
+            return '';
+          }}
         />
         
         <ExistenciaDetailsModal

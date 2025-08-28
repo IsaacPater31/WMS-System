@@ -54,8 +54,8 @@ export default class Existencia extends Component {
           alignItems: 'center', 
           mb: 3 
         }}>
-          <Typography variant="h4" fontWeight="bold" color="primary.main">
-            Existencias
+          <Typography variant="h5" fontWeight="bold" color="primary.main">
+            Lista de Existencias
           </Typography>
           <Button
             variant="contained"

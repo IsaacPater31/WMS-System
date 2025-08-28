@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -15,114 +15,159 @@ import {
   InputLabel,
   Select,
   MenuItem,
+  Alert,
+  Chip,
+  Paper,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import {
   Inventory,
-  Storage,
   Assignment,
   Business,
   Close,
   Save,
+  Info,
+  QrCode,
+  LocalShipping,
+  Inventory2,
 } from "@mui/icons-material";
 import { productos } from "../producto/Productos";
 import { guiasCarga } from "../guiaCarga/GuiasCarga";
+import { unidadesCarga } from "../guiaCarga/UnidadesCarga";
 import { bodegas } from "../producto/Bodegas";
+import { customers } from "../customer/Customers";
 
 export default function ExistenciaForm({ open, onClose, existencia = null, onSave }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const [formData, setFormData] = useState({
-    cantidad: "",
-    cantidad_nacionalizado: "",
-    cantidad_no_nacionalizado: "",
-    espacio_ocupado: "",
+    serial: "",
+    estado: "",
     GUIA_DE_CARGA_idGuia: "",
     GUIA_DE_CARGA_CLIENTE_idCliente: "",
     PRODUCTO_idProducto: "",
     PRODUCTO_BODEGA_idBodega: "",
+    UNIDAD_DE_CARGA_idUnidad: "",
   });
 
   const [errors, setErrors] = useState({});
+  const [selectedProducto, setSelectedProducto] = useState(null);
+  const [selectedGuia, setSelectedGuia] = useState(null);
+  const [selectedUnidadCarga, setSelectedUnidadCarga] = useState(null);
+  const [unidadesDisponibles, setUnidadesDisponibles] = useState([]);
 
   useEffect(() => {
     if (existencia) {
       setFormData({
-        idExistencia: existencia.idExistencia,
-        cantidad: existencia.cantidad || "",
-        cantidad_nacionalizado: existencia.cantidad_nacionalizado || "",
-        cantidad_no_nacionalizado: existencia.cantidad_no_nacionalizado || "",
-        espacio_ocupado: existencia.espacio_ocupado || "",
+        serial: existencia.serial || "",
+        estado: existencia.estado || "",
         GUIA_DE_CARGA_idGuia: existencia.GUIA_DE_CARGA_idGuia || "",
         GUIA_DE_CARGA_CLIENTE_idCliente: existencia.GUIA_DE_CARGA_CLIENTE_idCliente || "",
         PRODUCTO_idProducto: existencia.PRODUCTO_idProducto || "",
         PRODUCTO_BODEGA_idBodega: existencia.PRODUCTO_BODEGA_idBodega || "",
+        UNIDAD_DE_CARGA_idUnidad: existencia.UNIDAD_DE_CARGA_idUnidad || "",
       });
+      
+      // Establecer productos, guías y unidades seleccionadas
+      const producto = productos.find(p => p.idProducto === existencia.PRODUCTO_idProducto);
+      const guia = guiasCarga.find(g => g.idGuia === existencia.GUIA_DE_CARGA_idGuia);
+      const unidad = unidadesCarga.find(u => u.idUnidad === existencia.UNIDAD_DE_CARGA_idUnidad);
+      
+      setSelectedProducto(producto || null);
+      setSelectedGuia(guia || null);
+      setSelectedUnidadCarga(unidad || null);
+      
+      // Filtrar unidades disponibles para la guía seleccionada
+      if (guia) {
+        const unidades = unidadesCarga.filter(u => u.GUIA_DE_CARGA_idGuia === guia.idGuia);
+        setUnidadesDisponibles(unidades);
+      }
     } else {
       setFormData({
-        cantidad: "",
-        cantidad_nacionalizado: "",
-        cantidad_no_nacionalizado: "",
-        espacio_ocupado: "",
+        serial: "",
+        estado: "",
         GUIA_DE_CARGA_idGuia: "",
         GUIA_DE_CARGA_CLIENTE_idCliente: "",
         PRODUCTO_idProducto: "",
         PRODUCTO_BODEGA_idBodega: "",
+        UNIDAD_DE_CARGA_idUnidad: "",
       });
+      setSelectedProducto(null);
+      setSelectedGuia(null);
+      setSelectedUnidadCarga(null);
+      setUnidadesDisponibles([]);
     }
     setErrors({});
-  }, [existencia, open]);
+  }, [existencia]);
 
-  const handleChange = (field) => (event) => {
-    setFormData({
-      ...formData,
-      [field]: event.target.value,
-    });
-    // Limpiar error del campo cuando el usuario empiece a escribir
+  const handleChange = (field, value) => {
+    setFormData(prev => ({ ...prev, [field]: value }));
+    
+    // Limpiar error del campo
     if (errors[field]) {
-      setErrors({
-        ...errors,
-        [field]: "",
-      });
+      setErrors(prev => ({ ...prev, [field]: "" }));
+    }
+
+    // Auto-completar campos relacionados
+    if (field === "PRODUCTO_idProducto") {
+      const producto = productos.find(p => p.idProducto === value);
+      setSelectedProducto(producto || null);
+      if (producto) {
+        setFormData(prev => ({
+          ...prev,
+          PRODUCTO_BODEGA_idBodega: producto.BODEGA_idBodega || "",
+        }));
+      }
+    }
+
+    if (field === "GUIA_DE_CARGA_idGuia") {
+      const guia = guiasCarga.find(g => g.idGuia === value);
+      setSelectedGuia(guia || null);
+      if (guia) {
+        setFormData(prev => ({
+          ...prev,
+          GUIA_DE_CARGA_CLIENTE_idCliente: guia.CLIENTE_idCliente || "",
+          UNIDAD_DE_CARGA_idUnidad: "", // Reset unidad de carga
+        }));
+        setSelectedUnidadCarga(null);
+        
+        // Filtrar unidades disponibles para la guía seleccionada
+        const unidades = unidadesCarga.filter(u => u.GUIA_DE_CARGA_idGuia === guia.idGuia);
+        setUnidadesDisponibles(unidades);
+      } else {
+        setUnidadesDisponibles([]);
+      }
+    }
+
+    if (field === "UNIDAD_DE_CARGA_idUnidad") {
+      const unidad = unidadesCarga.find(u => u.idUnidad === value);
+      setSelectedUnidadCarga(unidad || null);
     }
   };
 
   const validateForm = () => {
     const newErrors = {};
 
-    if (!formData.cantidad || formData.cantidad <= 0) {
-      newErrors.cantidad = "La cantidad debe ser mayor a 0";
+    if (!formData.serial.trim()) {
+      newErrors.serial = "El serial es requerido";
     }
 
-    if (!formData.cantidad_nacionalizado || formData.cantidad_nacionalizado < 0) {
-      newErrors.cantidad_nacionalizado = "La cantidad nacionalizada debe ser mayor o igual a 0";
-    }
-
-    if (!formData.cantidad_no_nacionalizado || formData.cantidad_no_nacionalizado < 0) {
-      newErrors.cantidad_no_nacionalizado = "La cantidad no nacionalizada debe ser mayor o igual a 0";
-    }
-
-    // Validar que la suma de nacionalizado + no nacionalizado = cantidad total
-    const totalCalculado = parseInt(formData.cantidad_nacionalizado || 0) + parseInt(formData.cantidad_no_nacionalizado || 0);
-    const cantidadTotal = parseInt(formData.cantidad || 0);
-    
-    if (totalCalculado !== cantidadTotal) {
-      newErrors.cantidad = "La cantidad total debe ser igual a la suma de nacionalizado + no nacionalizado";
-      newErrors.cantidad_nacionalizado = "Verificar cantidades";
-      newErrors.cantidad_no_nacionalizado = "Verificar cantidades";
-    }
-
-    if (!formData.espacio_ocupado || formData.espacio_ocupado <= 0) {
-      newErrors.espacio_ocupado = "El espacio ocupado debe ser mayor a 0";
-    }
-
-    if (!formData.GUIA_DE_CARGA_idGuia) {
-      newErrors.GUIA_DE_CARGA_idGuia = "La guía de carga es requerida";
+    if (!formData.estado) {
+      newErrors.estado = "El estado es requerido";
     }
 
     if (!formData.PRODUCTO_idProducto) {
       newErrors.PRODUCTO_idProducto = "El producto es requerido";
     }
 
-    if (!formData.PRODUCTO_BODEGA_idBodega) {
-      newErrors.PRODUCTO_BODEGA_idBodega = "La bodega es requerida";
+    if (!formData.GUIA_DE_CARGA_idGuia) {
+      newErrors.GUIA_DE_CARGA_idGuia = "La guía de carga es requerida";
+    }
+
+    if (!formData.UNIDAD_DE_CARGA_idUnidad) {
+      newErrors.UNIDAD_DE_CARGA_idUnidad = "La unidad de carga es requerida";
     }
 
     setErrors(newErrors);
@@ -132,14 +177,17 @@ export default function ExistenciaForm({ open, onClose, existencia = null, onSav
   const handleSubmit = () => {
     if (validateForm()) {
       onSave(formData);
-      onClose();
     }
   };
 
   const handleClose = () => {
-    setErrors({});
     onClose();
   };
+
+  const estados = [
+    { value: "NACIONALIZADO", label: "Nacionalizado", color: "success" },
+    { value: "NO_NACIONALIZADO", label: "No Nacionalizado", color: "warning" },
+  ];
 
   return (
     <Dialog
@@ -147,257 +195,448 @@ export default function ExistenciaForm({ open, onClose, existencia = null, onSav
       onClose={handleClose}
       maxWidth="md"
       fullWidth
+      fullScreen={isMobile}
       PaperProps={{
         sx: {
-          borderRadius: 2,
-          maxHeight: '90vh'
+          borderRadius: isMobile ? 0 : 4,
+          maxHeight: isMobile ? '100vh' : '90vh',
+          margin: isMobile ? 0 : '32px',
+          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
+          border: '1px solid rgba(0, 0, 0, 0.08)',
+          overflow: 'hidden'
         }
       }}
     >
+      {/* Header Minimalista */}
       <DialogTitle sx={{
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        backgroundColor: 'primary.main',
-        color: 'white'
+        backgroundColor: 'rgba(0, 0, 0, 0.02)',
+        color: 'text.primary',
+        padding: { xs: 2, sm: 3 },
+        borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
+        minHeight: isMobile ? 64 : 80
       }}>
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-          <Inventory sx={{ mr: 2 }} />
-          <Typography variant="h6">
-            {existencia ? "Editar Existencia" : "Nueva Existencia"}
-          </Typography>
+        <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
+          <Box
+            sx={{
+              width: { xs: 40, sm: 48 },
+              height: { xs: 40, sm: 48 },
+              backgroundColor: 'rgba(25, 118, 210, 0.08)',
+              color: 'primary.main',
+              borderRadius: 2,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              mr: { xs: 1, sm: 2 }
+            }}
+          >
+            <QrCode sx={{ fontSize: { xs: 20, sm: 24 } }} />
+          </Box>
+          <Box sx={{ minWidth: 0 }}>
+            <Typography 
+              variant={isMobile ? "h6" : "h5"}
+              sx={{ 
+                fontWeight: "600",
+                fontSize: { xs: '1.125rem', sm: '1.25rem', md: '1.5rem' },
+                letterSpacing: '-0.025em',
+                lineHeight: 1.2
+              }}
+            >
+              {existencia ? "Editar Existencia" : "Nueva Existencia"}
+            </Typography>
+            <Typography 
+              variant="body2" 
+              sx={{ 
+                opacity: 0.7,
+                fontSize: { xs: '0.875rem', sm: '1rem' },
+                color: 'text.secondary',
+                mt: 0.5
+              }}
+            >
+              {existencia ? `Serial: ${existencia.serial}` : "Crear nueva unidad de inventario"}
+            </Typography>
+          </Box>
         </Box>
-        <IconButton onClick={handleClose} sx={{ color: 'white' }}>
-          <Close />
+        <IconButton 
+          onClick={handleClose} 
+          sx={{ 
+            color: 'text.secondary',
+            p: { xs: 1, sm: 1.5 },
+            borderRadius: 2,
+            '&:hover': {
+              backgroundColor: 'rgba(0, 0, 0, 0.04)'
+            }
+          }}
+        >
+          <Close sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </IconButton>
       </DialogTitle>
 
-      <DialogContent sx={{ pt: 3 }}>
-        <Grid container spacing={3}>
+      <DialogContent sx={{ 
+        pt: { xs: 2, sm: 3 },
+        px: { xs: 2, sm: 3 },
+        pb: { xs: 2, sm: 3 },
+        backgroundColor: 'rgba(0, 0, 0, 0.01)'
+      }}>
+        <Grid container spacing={{ xs: 2, sm: 3 }}>
           {/* Información Principal */}
           <Grid item xs={12}>
-            <Typography variant="h6" sx={{ mb: 2, display: 'flex', alignItems: 'center' }}>
-              <Inventory sx={{ mr: 1 }} />
-              Información Principal
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <QrCode sx={{ mr: 1, fontSize: { xs: 20, sm: 24 }, color: 'primary.main' }} />
+                <Typography 
+                  variant={isMobile ? "h6" : "h5"} 
+                  sx={{ 
+                    fontWeight: '600',
+                    fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  Información Principal
+                </Typography>
+              </Box>
+              <Divider sx={{ mb: 2, opacity: 0.3 }} />
+              
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Serial"
+                    value={formData.serial}
+                    onChange={(e) => handleChange("serial", e.target.value)}
+                    error={!!errors.serial}
+                    helperText={errors.serial}
+                    size={isMobile ? "medium" : "medium"}
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: 'white'
+                      }
+                    }}
+                  />
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!errors.estado} size={isMobile ? "medium" : "medium"}>
+                    <InputLabel>Estado</InputLabel>
+                    <Select
+                      value={formData.estado}
+                      onChange={(e) => handleChange("estado", e.target.value)}
+                      label="Estado"
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: 'white'
+                      }}
+                    >
+                      {estados.map((estado) => (
+                        <MenuItem key={estado.value} value={estado.value}>
+                          <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                            <Chip 
+                              label={estado.label} 
+                              color={estado.color} 
+                              size="small" 
+                              variant="outlined"
+                              sx={{ mr: 1, fontSize: '0.75rem' }}
+                            />
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+            </Paper>
           </Grid>
 
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Cantidad Total"
-              type="number"
-              value={formData.cantidad}
-              onChange={handleChange("cantidad")}
-              error={!!errors.cantidad}
-              helperText={errors.cantidad}
-              required
-              InputProps={{
-                inputProps: { min: 1 }
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Cantidad Nacionalizado"
-              type="number"
-              value={formData.cantidad_nacionalizado}
-              onChange={handleChange("cantidad_nacionalizado")}
-              error={!!errors.cantidad_nacionalizado}
-              helperText={errors.cantidad_nacionalizado}
-              required
-              InputProps={{
-                inputProps: { min: 0 }
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={4}>
-            <TextField
-              fullWidth
-              label="Cantidad No Nacionalizado"
-              type="number"
-              value={formData.cantidad_no_nacionalizado}
-              onChange={handleChange("cantidad_no_nacionalizado")}
-              error={!!errors.cantidad_no_nacionalizado}
-              helperText={errors.cantidad_no_nacionalizado}
-              required
-              InputProps={{
-                inputProps: { min: 0 }
-              }}
-            />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <TextField
-              fullWidth
-              label="Espacio Ocupado (m²)"
-              type="number"
-              value={formData.espacio_ocupado}
-              onChange={handleChange("espacio_ocupado")}
-              error={!!errors.espacio_ocupado}
-              helperText={errors.espacio_ocupado}
-              required
-              InputProps={{
-                inputProps: { min: 0.01, step: 0.01 }
-              }}
-            />
-          </Grid>
-
-          {/* Información de Producto */}
+          {/* Información del Producto */}
           <Grid item xs={12}>
-            <Typography variant="h6" sx={{ mb: 2, mt: 2, display: 'flex', alignItems: 'center' }}>
-              <Business sx={{ mr: 1 }} />
-              Producto y Bodega
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth error={!!errors.PRODUCTO_idProducto}>
-              <InputLabel>Producto</InputLabel>
-              <Select
-                value={formData.PRODUCTO_idProducto}
-                label="Producto"
-                onChange={handleChange("PRODUCTO_idProducto")}
-              >
-                {productos.map((producto) => (
-                  <MenuItem key={producto.idProducto} value={producto.idProducto}>
-                    {producto.nombre} - {producto.referencia}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.PRODUCTO_idProducto && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
-                  {errors.PRODUCTO_idProducto}
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Inventory sx={{ mr: 1, fontSize: { xs: 20, sm: 24 }, color: 'primary.main' }} />
+                <Typography 
+                  variant={isMobile ? "h6" : "h5"} 
+                  sx={{ 
+                    fontWeight: '600',
+                    fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  Producto y Bodega
                 </Typography>
-              )}
-            </FormControl>
-          </Grid>
+              </Box>
+              <Divider sx={{ mb: 2, opacity: 0.3 }} />
+              
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!errors.PRODUCTO_idProducto} size={isMobile ? "medium" : "medium"}>
+                    <InputLabel>Producto</InputLabel>
+                    <Select
+                      value={formData.PRODUCTO_idProducto}
+                      onChange={(e) => handleChange("PRODUCTO_idProducto", e.target.value)}
+                      label="Producto"
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: 'white'
+                      }}
+                    >
+                      {productos.map((producto) => (
+                        <MenuItem key={producto.idProducto} value={producto.idProducto}>
+                          <Box>
+                            <Typography variant="body2" fontWeight="500">
+                              {producto.nombre}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              {producto.referencia} - {producto.categoria?.nombre}
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Bodega"
+                    value={formData.PRODUCTO_BODEGA_idBodega}
+                    onChange={(e) => handleChange("PRODUCTO_BODEGA_idBodega", e.target.value)}
+                    size={isMobile ? "medium" : "medium"}
+                    disabled
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
 
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth error={!!errors.PRODUCTO_BODEGA_idBodega}>
-              <InputLabel>Bodega</InputLabel>
-              <Select
-                value={formData.PRODUCTO_BODEGA_idBodega}
-                label="Bodega"
-                onChange={handleChange("PRODUCTO_BODEGA_idBodega")}
-              >
-                {bodegas.map((bodega) => (
-                  <MenuItem key={bodega.idBodega} value={bodega.idBodega}>
-                    {bodega.nombre} - {bodega.capacidad} m²
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.PRODUCTO_BODEGA_idBodega && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
-                  {errors.PRODUCTO_BODEGA_idBodega}
-                </Typography>
+              {/* Información del Producto Seleccionado */}
+              {selectedProducto && (
+                <Alert severity="info" icon={<Info />} sx={{ mt: 2, borderRadius: 2 }}>
+                  <Typography variant="subtitle2" fontWeight="600" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                    Producto Seleccionado:
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    {selectedProducto.nombre} - {selectedProducto.referencia}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Categoría: {selectedProducto.categoria?.nombre} | Peso: {selectedProducto.peso} kg
+                  </Typography>
+                </Alert>
               )}
-            </FormControl>
+            </Paper>
           </Grid>
 
           {/* Información de Guía de Carga */}
           <Grid item xs={12}>
-            <Typography variant="h6" sx={{ mb: 2, mt: 2, display: 'flex', alignItems: 'center' }}>
-              <Assignment sx={{ mr: 1 }} />
-              Guía de Carga
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth error={!!errors.GUIA_DE_CARGA_idGuia}>
-              <InputLabel>Guía de Carga</InputLabel>
-              <Select
-                value={formData.GUIA_DE_CARGA_idGuia}
-                label="Guía de Carga"
-                onChange={handleChange("GUIA_DE_CARGA_idGuia")}
-              >
-                {guiasCarga.map((guia) => (
-                  <MenuItem key={guia.idGuia} value={guia.idGuia}>
-                    {guia.factura_comercial} - {guia.cliente?.nombre}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.GUIA_DE_CARGA_idGuia && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
-                  {errors.GUIA_DE_CARGA_idGuia}
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <LocalShipping sx={{ mr: 1, fontSize: { xs: 20, sm: 24 }, color: 'primary.main' }} />
+                <Typography 
+                  variant={isMobile ? "h6" : "h5"} 
+                  sx={{ 
+                    fontWeight: '600',
+                    fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  Guía de Carga
                 </Typography>
+              </Box>
+              <Divider sx={{ mb: 2, opacity: 0.3 }} />
+              
+              <Grid container spacing={2}>
+                <Grid item xs={12} md={6}>
+                  <FormControl fullWidth error={!!errors.GUIA_DE_CARGA_idGuia} size={isMobile ? "medium" : "medium"}>
+                    <InputLabel>Guía de Carga</InputLabel>
+                    <Select
+                      value={formData.GUIA_DE_CARGA_idGuia}
+                      onChange={(e) => handleChange("GUIA_DE_CARGA_idGuia", e.target.value)}
+                      label="Guía de Carga"
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: 'white'
+                      }}
+                    >
+                      {guiasCarga.map((guia) => (
+                        <MenuItem key={guia.idGuia} value={guia.idGuia}>
+                          <Box>
+                            <Typography variant="body2" fontWeight="500">
+                              {guia.factura_comercial}
+                            </Typography>
+                            <Typography variant="caption" color="text.secondary">
+                              Cliente: {guia.cliente?.razon_social} | Peso: {guia.peso_total} kg
+                            </Typography>
+                          </Box>
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                <Grid item xs={12} md={6}>
+                  <TextField
+                    fullWidth
+                    label="Cliente"
+                    value={formData.GUIA_DE_CARGA_CLIENTE_idCliente}
+                    onChange={(e) => handleChange("GUIA_DE_CARGA_CLIENTE_idCliente", e.target.value)}
+                    size={isMobile ? "medium" : "medium"}
+                    disabled
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2,
+                        backgroundColor: 'rgba(0, 0, 0, 0.02)'
+                      }
+                    }}
+                  />
+                </Grid>
+              </Grid>
+
+              {/* Información de Guía de Carga Seleccionada */}
+              {selectedGuia && (
+                <Alert severity="info" icon={<Info />} sx={{ mt: 2, borderRadius: 2 }}>
+                  <Typography variant="subtitle2" fontWeight="600" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                    Guía de Carga Seleccionada:
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    {selectedGuia.factura_comercial} - Cliente: {selectedGuia.cliente?.razon_social}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Fecha: {new Date(selectedGuia.fecha_ingreso).toLocaleDateString('es-ES')} | 
+                    Peso: {selectedGuia.peso_total} kg
+                  </Typography>
+                </Alert>
               )}
-            </FormControl>
+            </Paper>
           </Grid>
 
-          <Grid item xs={12} md={6}>
-            <FormControl fullWidth error={!!errors.CLIENTE_idCliente}>
-              <InputLabel>Cliente</InputLabel>
-              <Select
-                value={formData.CLIENTE_idCliente}
-                label="Cliente"
-                onChange={handleChange("CLIENTE_idCliente")}
-              >
-                {guiasCarga.map((guia) => (
-                  <MenuItem key={guia.idGuia} value={guia.CLIENTE_idCliente}>
-                    {guia.cliente?.nombre} - {guia.factura_comercial}
-                  </MenuItem>
-                ))}
-              </Select>
-              {errors.CLIENTE_idCliente && (
-                <Typography variant="caption" color="error" sx={{ mt: 0.5, ml: 1.5 }}>
-                  {errors.CLIENTE_idCliente}
+          {/* Información de Unidad de Carga */}
+          <Grid item xs={12}>
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                <Inventory2 sx={{ mr: 1, fontSize: { xs: 20, sm: 24 }, color: 'primary.main' }} />
+                <Typography 
+                  variant={isMobile ? "h6" : "h5"} 
+                  sx={{ 
+                    fontWeight: '600',
+                    fontSize: { xs: '1.125rem', sm: '1.25rem' },
+                    letterSpacing: '-0.025em'
+                  }}
+                >
+                  Unidad de Carga
                 </Typography>
+              </Box>
+              <Divider sx={{ mb: 2, opacity: 0.3 }} />
+              
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth error={!!errors.UNIDAD_DE_CARGA_idUnidad} size={isMobile ? "medium" : "medium"}>
+                    <InputLabel>Unidad de Carga</InputLabel>
+                    <Select
+                      value={formData.UNIDAD_DE_CARGA_idUnidad}
+                      onChange={(e) => handleChange("UNIDAD_DE_CARGA_idUnidad", e.target.value)}
+                      label="Unidad de Carga"
+                      disabled={!formData.GUIA_DE_CARGA_idGuia}
+                      sx={{
+                        borderRadius: 2,
+                        backgroundColor: formData.GUIA_DE_CARGA_idGuia ? 'white' : 'rgba(0, 0, 0, 0.02)'
+                      }}
+                    >
+                      {unidadesDisponibles.length > 0 ? (
+                        unidadesDisponibles.map((unidad) => (
+                          <MenuItem key={unidad.idUnidad} value={unidad.idUnidad}>
+                            <Box>
+                              <Typography variant="body2" fontWeight="500">
+                                {unidad.idUnidad} - {unidad.tipo_unidad}
+                              </Typography>
+                              <Typography variant="caption" color="text.secondary">
+                                Peso: {unidad.peso_bruto} kg | {unidad.descripcion}
+                              </Typography>
+                            </Box>
+                          </MenuItem>
+                        ))
+                      ) : (
+                        <MenuItem disabled>
+                          <Typography variant="body2" color="text.secondary">
+                            {formData.GUIA_DE_CARGA_idGuia ? "No hay unidades disponibles" : "Seleccione una guía primero"}
+                          </Typography>
+                        </MenuItem>
+                      )}
+                    </Select>
+                  </FormControl>
+                </Grid>
+              </Grid>
+
+              {/* Información de Unidad de Carga Seleccionada */}
+              {selectedUnidadCarga && (
+                <Alert severity="success" icon={<Inventory2 />} sx={{ mt: 2, borderRadius: 2 }}>
+                  <Typography variant="subtitle2" fontWeight="600" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
+                    Unidad de Carga Seleccionada:
+                  </Typography>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    {selectedUnidadCarga.idUnidad} - {selectedUnidadCarga.tipo_unidad}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Peso Bruto: {selectedUnidadCarga.peso_bruto} kg | {selectedUnidadCarga.descripcion}
+                  </Typography>
+                </Alert>
               )}
-            </FormControl>
-          </Grid>
 
-          {/* Información Adicional */}
-          <Grid item xs={12}>
-            <Typography variant="h6" sx={{ mb: 2, mt: 2, display: 'flex', alignItems: 'center' }}>
-              <Storage sx={{ mr: 1 }} />
-              Información Adicional
-            </Typography>
-            <Divider sx={{ mb: 2 }} />
-          </Grid>
-
-          <Grid item xs={12}>
-            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-              <strong>Notas:</strong>
-            </Typography>
-            <Box sx={{ pl: 2 }}>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                • La cantidad total debe ser igual a la suma de nacionalizado + no nacionalizado
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                • Nacionalizado: mercancía que ha completado el proceso aduanero
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                • No nacionalizado: mercancía en tránsito o pendiente de nacionalización
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                • El espacio ocupado se mide en metros cuadrados (m²)
-              </Typography>
-              <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                • La existencia debe estar asociada a una guía de carga y producto
-              </Typography>
-            </Box>
+              {/* Información cuando no hay guía seleccionada */}
+              {!formData.GUIA_DE_CARGA_idGuia && (
+                <Alert severity="warning" icon={<Info />} sx={{ mt: 2, borderRadius: 2 }}>
+                  <Typography variant="body2" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' } }}>
+                    Seleccione primero una Guía de Carga para ver las unidades disponibles
+                  </Typography>
+                </Alert>
+              )}
+            </Paper>
           </Grid>
         </Grid>
       </DialogContent>
 
-      <DialogActions sx={{ p: 3 }}>
-        <Button onClick={handleClose} variant="outlined">
+      <DialogActions sx={{ 
+        p: { xs: 2, sm: 3 },
+        borderTop: '1px solid rgba(0, 0, 0, 0.06)',
+        backgroundColor: 'rgba(0, 0, 0, 0.02)',
+        gap: 1
+      }}>
+        <Button 
+          onClick={handleClose} 
+          variant="outlined"
+          size={isMobile ? "large" : "medium"}
+          sx={{
+            fontWeight: '500',
+            borderWidth: 1.5,
+            borderRadius: 2,
+            textTransform: 'none',
+            letterSpacing: '0.025em',
+            minWidth: 100
+          }}
+        >
           Cancelar
         </Button>
-        <Button
-          onClick={handleSubmit}
-          variant="contained"
+        <Button 
+          onClick={handleSubmit} 
+          variant="contained" 
           color="primary"
           startIcon={<Save />}
+          size={isMobile ? "large" : "medium"}
+          sx={{
+            fontWeight: '500',
+            borderRadius: 2,
+            textTransform: 'none',
+            letterSpacing: '0.025em',
+            minWidth: 120,
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            '&:hover': {
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+            }
+          }}
         >
-          {existencia ? "Actualizar" : "Guardar"}
+          Guardar
         </Button>
       </DialogActions>
     </Dialog>
