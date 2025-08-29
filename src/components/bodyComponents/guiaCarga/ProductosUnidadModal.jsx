@@ -28,6 +28,7 @@ import {
   Warehouse,
   Scale,
   Close,
+  LocalShipping,
 } from "@mui/icons-material";
 import { productos } from "../producto/Productos";
 
@@ -42,19 +43,6 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
     producto => producto.UNIDAD_DE_CARGA_idUnidad === unidad.idUnidad
   );
 
-  const getEstadoColor = (estado) => {
-    switch (estado) {
-      case 'DISPONIBLE':
-        return 'success';
-      case 'RESERVADO':
-        return 'warning';
-      case 'VENDIDO':
-        return 'error';
-      default:
-        return 'default';
-    }
-  };
-
   const calcularPesoTotal = () => {
     return productosDeEstaUnidad.reduce((total, producto) => {
       const peso = parseFloat(producto.peso) || 0;
@@ -64,6 +52,10 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
 
   const getCategoriasUnicas = () => {
     return new Set(productosDeEstaUnidad.map(p => p.categoria?.nombre).filter(Boolean));
+  };
+
+  const getBodegasUnicas = () => {
+    return new Set(productosDeEstaUnidad.map(p => p.bodega?.nombre).filter(Boolean));
   };
 
   return (
@@ -168,7 +160,7 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
           boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-            <Inventory sx={{ color: 'primary.main', mr: 1, fontSize: { xs: 20, sm: 24 } }} />
+            <LocalShipping sx={{ color: 'primary.main', mr: 1, fontSize: { xs: 20, sm: 24 } }} />
             <Typography variant="h6" sx={{ fontWeight: '600', fontSize: { xs: '1rem', sm: '1.125rem' } }}>
               Información de la Unidad
             </Typography>
@@ -243,44 +235,26 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
                 }}>
                   <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
                     {/* Header de la tarjeta */}
-                    <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                        <Avatar
-                          sx={{
-                            width: 32,
-                            height: 32,
-                            backgroundColor: 'rgba(25, 118, 210, 0.08)',
-                            color: 'primary.main',
-                            mr: 1,
-                            borderRadius: 1
-                          }}
-                        >
-                          <Inventory sx={{ fontSize: 16 }} />
-                        </Avatar>
-                        <Typography variant="body2" fontWeight="600" color="primary.main">
-                          {producto.idProducto}
-                        </Typography>
-                      </Box>
-                      <Chip
-                        label={producto.estado}
-                        color={getEstadoColor(producto.estado)}
-                        size="small"
-                        variant="outlined"
-                        sx={{ fontWeight: '500', fontSize: '0.75rem' }}
-                      />
-                    </Box>
-
-                    {/* Información del producto */}
-                    <Box sx={{ mb: 2 }}>
-                      <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-                        Nombre del Producto
-                      </Typography>
-                      <Typography variant="body1" fontWeight="500" sx={{ fontSize: '0.875rem' }}>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
+                      <Avatar
+                        alt="Producto"
+                        variant="square"
+                        sx={{ 
+                          borderRadius: 1, 
+                          width: 30, 
+                          height: 30, 
+                          backgroundColor: 'primary.main',
+                          mr: 2
+                        }}
+                      >
+                        P
+                      </Avatar>
+                      <Typography variant="subtitle2" sx={{ flex: 1 }}>
                         {producto.nombre}
                       </Typography>
                     </Box>
 
-                    {/* Referencia */}
+                    {/* Información del producto */}
                     <Box sx={{ mb: 2 }}>
                       <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
                         Referencia
@@ -289,6 +263,34 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
                         {producto.referencia}
                       </Typography>
                     </Box>
+
+                    {/* Cantidades */}
+                    <Grid container spacing={2} sx={{ mb: 2 }}>
+                      <Grid item xs={4}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                          Cantidad Total
+                        </Typography>
+                        <Typography variant="body1" fontWeight="bold" sx={{ fontSize: '0.875rem', color: 'primary.main' }}>
+                          {producto.cantidad || 0}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                          Nacionalizado
+                        </Typography>
+                        <Typography variant="body1" fontWeight="medium" sx={{ fontSize: '0.875rem', color: 'success.main' }}>
+                          {producto.cantidad_nacionalizado || 0}
+                        </Typography>
+                      </Grid>
+                      <Grid item xs={4}>
+                        <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                          No Nacionalizado
+                        </Typography>
+                        <Typography variant="body1" fontWeight="medium" sx={{ fontSize: '0.875rem', color: 'warning.main' }}>
+                          {producto.cantidad_no_nacionalizado || 0}
+                        </Typography>
+                      </Grid>
+                    </Grid>
 
                     {/* Peso y Categoría */}
                     <Grid container spacing={2} sx={{ mb: 2 }}>
@@ -334,10 +336,11 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
             <Table>
               <TableHead>
                 <TableRow sx={{ backgroundColor: 'rgba(0, 0, 0, 0.02)' }}>
-                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>ID Producto</TableCell>
-                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Nombre</TableCell>
+                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Nombre del Producto</TableCell>
                   <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Referencia</TableCell>
-                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Estado</TableCell>
+                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Cantidad Total</TableCell>
+                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Nacionalizado</TableCell>
+                  <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>No Nacionalizado</TableCell>
                   <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Peso (kg)</TableCell>
                   <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Categoría</TableCell>
                   <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Bodega</TableCell>
@@ -354,14 +357,24 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
                     }}
                   >
                     <TableCell>
-                      <Typography variant="body2" fontWeight="600" color="primary.main">
-                        {producto.idProducto}
-                      </Typography>
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="500" sx={{ maxWidth: 150 }}>
-                        {producto.nombre}
-                      </Typography>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar
+                          alt="Producto"
+                          variant="square"
+                          sx={{ 
+                            borderRadius: 1, 
+                            width: 30, 
+                            height: 30, 
+                            backgroundColor: 'primary.main',
+                            mr: 2
+                          }}
+                        >
+                          P
+                        </Avatar>
+                        <Typography variant="subtitle2">
+                          {producto.nombre}
+                        </Typography>
+                      </Box>
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" sx={{ maxWidth: 120 }}>
@@ -369,27 +382,29 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Chip
-                        label={producto.estado}
-                        color={getEstadoColor(producto.estado)}
-                        size="small"
-                        variant="outlined"
-                        sx={{ fontWeight: '500', fontSize: '0.75rem' }}
-                      />
-                    </TableCell>
-                    <TableCell>
-                      <Typography variant="body2" fontWeight="500" color="primary.main">
-                        {producto.peso}
+                      <Typography variant="body2" fontWeight="bold" color="primary.main">
+                        {producto.cantidad || 0}
                       </Typography>
                     </TableCell>
                     <TableCell>
-                      <Chip
-                        label={producto.categoria?.nombre || "N/A"}
-                        size="small"
-                        color="secondary"
-                        variant="outlined"
-                        sx={{ fontWeight: '500', fontSize: '0.75rem' }}
-                      />
+                      <Typography variant="body2" color="success.main" fontWeight="medium">
+                        {producto.cantidad_nacionalizado || 0}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" color="warning.main" fontWeight="medium">
+                        {producto.cantidad_no_nacionalizado || 0}
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" fontWeight="500" color="primary.main">
+                        {producto.peso} kg
+                      </Typography>
+                    </TableCell>
+                    <TableCell>
+                      <Typography variant="body2" sx={{ maxWidth: 120 }}>
+                        {producto.categoria?.nombre || "N/A"}
+                      </Typography>
                     </TableCell>
                     <TableCell>
                       <Typography variant="body2" sx={{ maxWidth: 120 }}>
@@ -420,7 +435,7 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
               </Typography>
             </Box>
             <Grid container spacing={2}>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={2}>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
                   Total Productos
                 </Typography>
@@ -428,7 +443,7 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
                   {productosDeEstaUnidad.length}
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={2}>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
                   Peso Total
                 </Typography>
@@ -436,34 +451,41 @@ export default function ProductosUnidadModal({ open, onClose, unidad }) {
                   {calcularPesoTotal().toFixed(2)} kg
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={2}>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-                  Categorías Únicas
+                  Categorías
                 </Typography>
                 <Typography variant="body1" fontWeight="500" sx={{ fontSize: '0.875rem', color: 'primary.main' }}>
                   {getCategoriasUnicas().size}
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={3}>
+              <Grid item xs={12} md={2}>
                 <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
-                  Estados
+                  Bodegas
+                </Typography>
+                <Typography variant="body1" fontWeight="500" sx={{ fontSize: '0.875rem', color: 'primary.main' }}>
+                  {getBodegasUnicas().size}
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                  Distribución por Nacionalización
                 </Typography>
                 <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-                  {Object.entries(
-                    productosDeEstaUnidad.reduce((acc, producto) => {
-                      acc[producto.estado] = (acc[producto.estado] || 0) + 1;
-                      return acc;
-                    }, {})
-                  ).map(([estado, cantidad]) => (
-                    <Chip
-                      key={estado}
-                      label={`${estado}: ${cantidad}`}
-                      color={getEstadoColor(estado)}
-                      size="small"
-                      variant="outlined"
-                      sx={{ fontWeight: '500', fontSize: '0.75rem' }}
-                    />
-                  ))}
+                  <Chip
+                    label={`Nacionalizado: ${productosDeEstaUnidad.reduce((sum, p) => sum + (p.cantidad_nacionalizado || 0), 0)}`}
+                    color="success"
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontWeight: '500', fontSize: '0.75rem' }}
+                  />
+                  <Chip
+                    label={`No Nacionalizado: ${productosDeEstaUnidad.reduce((sum, p) => sum + (p.cantidad_no_nacionalizado || 0), 0)}`}
+                    color="warning"
+                    size="small"
+                    variant="outlined"
+                    sx={{ fontWeight: '500', fontSize: '0.75rem' }}
+                  />
                 </Box>
               </Grid>
             </Grid>
