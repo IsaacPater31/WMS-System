@@ -5,49 +5,52 @@ import {
   DialogContent,
   DialogActions,
   Button,
-  Grid,
   Typography,
   Box,
   Avatar,
   Chip,
+  Grid,
   Divider,
   Paper,
   useTheme,
-  useMediaQuery,
+  useMediaQuery
 } from "@mui/material";
 import {
-  Business,
-  Person,
-  Email,
-  Phone,
-  LocationOn,
   Close,
   Edit,
+  Category,
+  Description
 } from "@mui/icons-material";
 
-export default function CustomerDetailsModal({ open, onClose, customer, onEdit, isMobile = false }) {
+export default function CategoriaDetailsModal({ 
+  open, 
+  onClose, 
+  categoria, 
+  onEdit,
+  isMobile 
+}) {
   const theme = useTheme();
   const fullScreen = useMediaQuery(theme.breakpoints.down('md'));
 
-  if (!customer) return null;
+  if (!categoria) return null;
 
   const handleEdit = () => {
-    onEdit(customer);
+    onEdit(categoria);
     onClose();
   };
 
   return (
-    <Dialog 
-      open={open} 
-      onClose={onClose} 
-      maxWidth="lg" 
+    <Dialog
+      open={open}
+      onClose={onClose}
+      fullScreen={fullScreen}
+      maxWidth="lg"
       fullWidth
-      fullScreen={isMobile}
       PaperProps={{
         sx: {
-          borderRadius: isMobile ? 0 : 4,
-          maxHeight: isMobile ? '100vh' : '90vh',
-          margin: isMobile ? 0 : '32px',
+          borderRadius: fullScreen ? 0 : 4,
+          maxHeight: fullScreen ? '100vh' : '90vh',
+          margin: fullScreen ? 0 : '32px',
           boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
           border: '1px solid rgba(0, 0, 0, 0.08)',
           overflow: 'hidden'
@@ -63,7 +66,7 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
         color: 'text.primary',
         padding: { xs: 2, sm: 3 },
         borderBottom: '1px solid rgba(0, 0, 0, 0.06)',
-        minHeight: isMobile ? 64 : 80
+        minHeight: fullScreen ? 64 : 80
       }}>
         <Box sx={{ display: 'flex', alignItems: 'center', flex: 1, minWidth: 0 }}>
           <Avatar
@@ -76,7 +79,7 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
               borderRadius: 2
             }}
           >
-            <Business sx={{ fontSize: { xs: 20, sm: 24 } }} />
+            <Category sx={{ fontSize: { xs: 20, sm: 24 } }} />
           </Avatar>
           <Box sx={{ minWidth: 0 }}>
             <Typography 
@@ -88,7 +91,7 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
                 lineHeight: 1.2
               }}
             >
-              {customer.nombre}
+              {categoria.nombre}
             </Typography>
             <Typography 
               variant="body2" 
@@ -99,7 +102,7 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
                 mt: 0.5
               }}
             >
-              {customer.razon_social}
+              Categoría de Productos
             </Typography>
           </Box>
         </Box>
@@ -118,7 +121,7 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
           <Close sx={{ fontSize: { xs: 20, sm: 24 } }} />
         </Button>
       </DialogTitle>
-
+      
       <DialogContent sx={{ 
         pt: { xs: 2, sm: 3 },
         px: { xs: 2, sm: 3 },
@@ -139,11 +142,10 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
                 <Box>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                    NIT
+                    Nombre de la Categoría
                   </Typography>
                   <Typography 
                     variant="h6" 
-                    fontFamily="monospace"
                     sx={{ 
                       fontWeight: '600',
                       fontSize: { xs: '1rem', sm: '1.125rem' },
@@ -151,12 +153,12 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
                       letterSpacing: '0.025em'
                     }}
                   >
-                    {customer.nit}
+                    {categoria.nombre}
                   </Typography>
                 </Box>
                 <Box sx={{ textAlign: 'right' }}>
                   <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                    ID Cliente
+                    ID de Categoría
                   </Typography>
                   <Typography 
                     variant="h6" 
@@ -166,20 +168,20 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
                       color: 'text.primary'
                     }}
                   >
-                    #{customer.idCliente}
+                    #{categoria.idCategoria}
                   </Typography>
                 </Box>
               </Box>
             </Paper>
           </Grid>
 
-          {/* Información de Contacto */}
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: { xs: 2, sm: 3 }, height: '100%', borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
+          {/* Información de la Categoría */}
+          <Grid item xs={12}>
+            <Paper sx={{ p: { xs: 2, sm: 3 }, borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Person sx={{ color: 'primary.main', mr: 1, fontSize: { xs: 20, sm: 24 } }} />
+                <Description sx={{ color: 'primary.main', mr: 1, fontSize: { xs: 20, sm: 24 } }} />
                 <Typography variant="h6" sx={{ fontWeight: '600', fontSize: { xs: '1rem', sm: '1.125rem' } }}>
-                  Información de Contacto
+                  Información de la Categoría
                 </Typography>
               </Box>
               <Divider sx={{ mb: 2, opacity: 0.3 }} />
@@ -188,50 +190,10 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
                 <Grid item xs={12}>
                   <Box>
                     <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Representante Legal
+                      Descripción
                     </Typography>
                     <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.representante_legal}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Encargado
-                    </Typography>
-                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.encargado}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Email
-                    </Typography>
-                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.email}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Teléfono
-                    </Typography>
-                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.telefono}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={6}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Tel. Encargado
-                    </Typography>
-                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.tel_encargado}
+                      {categoria.descripcion}
                     </Typography>
                   </Box>
                 </Grid>
@@ -239,52 +201,18 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
             </Paper>
           </Grid>
 
-          {/* Información Fiscal y Ubicación */}
-          <Grid item xs={12} md={6}>
-            <Paper sx={{ p: { xs: 2, sm: 3 }, height: '100%', borderRadius: 3, border: '1px solid rgba(0, 0, 0, 0.06)' }}>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <LocationOn sx={{ color: 'primary.main', mr: 1, fontSize: { xs: 20, sm: 24 } }} />
-                <Typography variant="h6" sx={{ fontWeight: '600', fontSize: { xs: '1rem', sm: '1.125rem' } }}>
-                  Información Fiscal
-                </Typography>
-              </Box>
-              <Divider sx={{ mb: 2, opacity: 0.3 }} />
-              
-              <Grid container spacing={2}>
-                <Grid item xs={12}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Razón Social
-                    </Typography>
-                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.razon_social}
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12}>
-                  <Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: { xs: '0.75rem', sm: '0.875rem' }, mb: 0.5 }}>
-                      Dirección
-                    </Typography>
-                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: { xs: '0.875rem', sm: '1rem' } }}>
-                      {customer.direccion}
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </Paper>
-          </Grid>
+
         </Grid>
       </DialogContent>
-
+      
       <DialogActions sx={{ 
         p: { xs: 2, sm: 3 },
         borderTop: '1px solid rgba(0, 0, 0, 0.06)',
         backgroundColor: 'rgba(0, 0, 0, 0.02)',
         gap: 1
       }}>
-        <Button 
-          onClick={onClose} 
+        <Button
+          onClick={onClose}
           variant="outlined"
           size={isMobile ? "large" : "medium"}
           sx={{
@@ -298,11 +226,10 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
         >
           Cerrar
         </Button>
-        <Button 
-          onClick={handleEdit} 
-          variant="contained" 
-          color="primary"
+        <Button
+          onClick={handleEdit}
           startIcon={<Edit />}
+          variant="contained"
           size={isMobile ? "large" : "medium"}
           sx={{
             fontWeight: '500',
@@ -316,7 +243,7 @@ export default function CustomerDetailsModal({ open, onClose, customer, onEdit, 
             }
           }}
         >
-          Editar Cliente
+          Editar Categoría
         </Button>
       </DialogActions>
     </Dialog>

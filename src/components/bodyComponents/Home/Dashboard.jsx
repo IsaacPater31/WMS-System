@@ -146,8 +146,6 @@ function Dashboard() {
     }
   ];
 
-
-
   const getTipoColor = (tipo) => {
     switch (tipo) {
       case 'INGRESO':
@@ -174,8 +172,8 @@ function Dashboard() {
   return (
     <Box sx={{ 
       p: 3,
-             background: '#f8f9fa',
-       minHeight: '100vh',
+      background: '#f8f9fa',
+      minHeight: '100vh',
       '@keyframes slideInFromTop': {
         '0%': {
           opacity: 0,
@@ -234,28 +232,27 @@ function Dashboard() {
       }
     }}>
 
-
       {/* Statistics Cards */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
-                {stats.map((stat, index) => {
+        {stats.map((stat, index) => {
           const animations = ['slideInFromLeft', 'slideInFromTop', 'slideInFromRight', 'slideInFromBottom'];
           return (
             <Grid item xs={12} sm={6} md={3} key={index}>
-                             <Card sx={{ 
-                 height: '100%', 
-                 background: '#ffffff',
-                 borderRadius: '16px',
-                 boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                 animation: `${animations[index]} 0.8s ease-out ${index * 0.15}s both`,
-                 '&:hover': {
-                   transform: 'translateY(-4px)',
-                   boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
-                   '& .stat-icon': {
-                     transform: 'scale(1.1)'
-                   }
-                 }
-               }}>
+              <Card sx={{ 
+                height: '100%', 
+                background: '#ffffff',
+                borderRadius: '16px',
+                boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                animation: `${animations[index]} 0.8s ease-out ${index * 0.15}s both`,
+                '&:hover': {
+                  transform: 'translateY(-4px)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)',
+                  '& .stat-icon': {
+                    transform: 'scale(1.1)'
+                  }
+                }
+              }}>
                 <CardContent>
                   <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                     <Box>
@@ -269,18 +266,18 @@ function Dashboard() {
                         {stat.subtitle}
                       </Typography>
                     </Box>
-                                         <Avatar 
-                       className="stat-icon"
-                       sx={{ 
-                         background: stat.color,
-                         width: 56, 
-                         height: 56,
-                         display: 'flex',
-                         alignItems: 'center',
-                         justifyContent: 'center',
-                         transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
-                       }}
-                     >
+                    <Avatar 
+                      className="stat-icon"
+                      sx={{ 
+                        background: stat.color,
+                        width: 56, 
+                        height: 56,
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)'
+                      }}
+                    >
                       {stat.icon}
                     </Avatar>
                   </Box>
@@ -294,99 +291,99 @@ function Dashboard() {
       <Grid container spacing={3}>
         {/* Recent Movements */}
         <Grid item xs={12} md={6}>
-                     <Card sx={{ 
-             height: '100%',
-             background: '#ffffff',
-             borderRadius: '16px',
-             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-             animation: 'slideInFromLeft 0.8s ease-out 0.6s both',
-             '&:hover': {
-               transform: 'translateY(-4px)',
-               boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
-             }
-           }}>
+          <Card sx={{ 
+            height: '100%',
+            background: '#ffffff',
+            borderRadius: '16px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            animation: 'slideInFromLeft 0.8s ease-out 0.6s both',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
+            }
+          }}>
             <CardContent>
-                             <Typography variant="h6" sx={{ 
-                 fontWeight: '600',
-                 mb: 3,
-                 color: '#1a1a1a',
-                 fontSize: '1.1rem'
-               }}>
-                 Movimientos Recientes
-               </Typography>
-                               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {recentMovements.map((movement) => (
-                    <Box
-                      key={movement.id}
-                      sx={{
-                        p: 1.5,
-                        borderRadius: '8px',
-                        background: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        transition: 'all 0.2s ease',
-                        '&:hover': {
-                          background: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                          borderColor: '#007AFF'
-                        }
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Typography variant="body2" sx={{ 
-                            fontWeight: '600', 
-                            color: '#1a1a1a',
-                            mb: 0.25,
-                            overflow: 'hidden',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap'
-                          }}>
-                            {movement.producto}
-                          </Typography>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                            <Box sx={{ 
-                              width: 6, 
-                              height: 6, 
-                              borderRadius: '50%', 
-                              backgroundColor: getTipoColor(movement.tipo) === 'success' ? '#28a745' : 
-                                               getTipoColor(movement.tipo) === 'error' ? '#dc3545' : 
-                                               getTipoColor(movement.tipo) === 'warning' ? '#ffc107' : '#007AFF'
-                            }} />
-                            <Typography variant="caption" sx={{ 
-                              color: '#6c757d',
-                              fontSize: '0.7rem',
-                              textTransform: 'uppercase',
-                              fontWeight: '500'
-                            }}>
-                              {movement.tipo}
-                            </Typography>
-                            <Typography variant="caption" sx={{ 
-                              color: '#6c757d',
-                              fontSize: '0.7rem'
-                            }}>
-                              • {formatDate(movement.fecha)}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        <Box sx={{ 
-                          textAlign: 'right',
-                          ml: 1,
-                          minWidth: '50px'
+              <Typography variant="h6" sx={{ 
+                fontWeight: '600',
+                mb: 3,
+                color: '#1a1a1a',
+                fontSize: '1.1rem'
+              }}>
+                Movimientos Recientes
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {recentMovements.map((movement) => (
+                  <Box
+                    key={movement.id}
+                    sx={{
+                      p: 1.5,
+                      borderRadius: '8px',
+                      background: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        background: '#ffffff',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                        borderColor: '#007AFF'
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Typography variant="body2" sx={{ 
+                          fontWeight: '600', 
+                          color: '#1a1a1a',
+                          mb: 0.25,
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
+                          whiteSpace: 'nowrap'
                         }}>
-                          <Typography variant="body1" sx={{ 
-                            fontWeight: '700',
-                            color: movement.cantidad > 0 ? '#28a745' : '#dc3545',
-                            lineHeight: 1,
-                            fontSize: '0.9rem'
+                          {movement.producto}
+                        </Typography>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                          <Box sx={{ 
+                            width: 6, 
+                            height: 6, 
+                            borderRadius: '50%', 
+                            backgroundColor: getTipoColor(movement.tipo) === 'success' ? '#28a745' : 
+                                             getTipoColor(movement.tipo) === 'error' ? '#dc3545' : 
+                                             getTipoColor(movement.tipo) === 'warning' ? '#ffc107' : '#007AFF'
+                          }} />
+                          <Typography variant="caption" sx={{ 
+                            color: '#6c757d',
+                            fontSize: '0.7rem',
+                            textTransform: 'uppercase',
+                            fontWeight: '500'
                           }}>
-                            {movement.cantidad > 0 ? '+' : ''}{movement.cantidad}
+                            {movement.tipo}
+                          </Typography>
+                          <Typography variant="caption" sx={{ 
+                            color: '#6c757d',
+                            fontSize: '0.7rem'
+                          }}>
+                            • {formatDate(movement.fecha)}
                           </Typography>
                         </Box>
                       </Box>
+                      <Box sx={{ 
+                        textAlign: 'right',
+                        ml: 1,
+                        minWidth: '50px'
+                      }}>
+                        <Typography variant="body1" sx={{ 
+                          fontWeight: '700',
+                          color: movement.cantidad > 0 ? '#28a745' : '#dc3545',
+                          lineHeight: 1,
+                          fontSize: '0.9rem'
+                        }}>
+                          {movement.cantidad > 0 ? '+' : ''}{movement.cantidad}
+                        </Typography>
+                      </Box>
                     </Box>
-                  ))}
-                </Box>
+                  </Box>
+                ))}
+              </Box>
               <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Button 
                   variant="outlined" 
@@ -402,156 +399,156 @@ function Dashboard() {
 
         {/* Top Products */}
         <Grid item xs={12} md={6}>
-                     <Card sx={{ 
-             height: '100%',
-             background: '#ffffff',
-             borderRadius: '16px',
-             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-             animation: 'slideInFromRight 0.8s ease-out 0.7s both',
-             '&:hover': {
-               transform: 'translateY(-4px)',
-               boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
-             }
-           }}>
+          <Card sx={{ 
+            height: '100%',
+            background: '#ffffff',
+            borderRadius: '16px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            animation: 'slideInFromRight 0.8s ease-out 0.7s both',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
+            }
+          }}>
             <CardContent>
-                             <Typography variant="h6" sx={{ 
-                 fontWeight: '600',
-                 mb: 3,
-                 color: '#1a1a1a',
-                 fontSize: '1.1rem'
-               }}>
-                 Productos con Más Existencias
-               </Typography>
-                               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
-                  {productosConExistencias.map((product, index) => (
-                    <Box
-                      key={index}
-                      sx={{
-                        p: 1.5,
-                        borderRadius: '8px',
-                        background: '#f8f9fa',
-                        border: '1px solid #e9ecef',
-                        transition: 'all 0.2s ease',
-                        '&:hover': {
-                          background: '#ffffff',
-                          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
-                          borderColor: '#007AFF'
-                        }
-                      }}
-                    >
-                      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-                        <Box sx={{ flex: 1, minWidth: 0 }}>
-                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
-                            <Typography variant="body2" sx={{ 
-                              fontWeight: '600', 
-                              color: '#1a1a1a',
-                              overflow: 'hidden',
-                              textOverflow: 'ellipsis',
-                              whiteSpace: 'nowrap'
-                            }}>
-                              {product.nombre}
-                            </Typography>
-                            <Typography variant="caption" sx={{ 
-                              color: '#6c757d',
-                              backgroundColor: '#e9ecef',
-                              px: 0.75,
-                              py: 0.25,
-                              borderRadius: '4px',
-                              fontSize: '0.65rem',
-                              fontWeight: '500'
-                            }}>
-                              {product.referencia}
-                            </Typography>
-                          </Box>
-                          
-                          <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <Box sx={{ 
-                                width: 4, 
-                                height: 4, 
-                                borderRadius: '50%', 
-                                backgroundColor: '#28a745' 
-                              }} />
-                              <Typography variant="caption" sx={{ 
-                                color: '#28a745',
-                                fontWeight: '600',
-                                fontSize: '0.7rem'
-                              }}>
-                                {product.nacionalizado} Nac
-                              </Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-                              <Box sx={{ 
-                                width: 4, 
-                                height: 4, 
-                                borderRadius: '50%', 
-                                backgroundColor: '#ffc107' 
-                              }} />
-                              <Typography variant="caption" sx={{ 
-                                color: '#ffc107',
-                                fontWeight: '600',
-                                fontSize: '0.7rem'
-                              }}>
-                                {product.noNacionalizado} No Nac
-                              </Typography>
-                            </Box>
-                            <Typography variant="caption" sx={{ 
-                              color: '#6c757d',
-                              fontSize: '0.7rem'
-                            }}>
-                              • {product.bodega}
-                            </Typography>
-                          </Box>
-                        </Box>
-                        
-                        <Box sx={{ 
-                          textAlign: 'right',
-                          ml: 1,
-                          minWidth: '50px'
-                        }}>
-                          <Typography variant="body1" sx={{ 
-                            fontWeight: '700',
-                            color: '#007AFF',
-                            lineHeight: 1,
-                            fontSize: '0.9rem'
+              <Typography variant="h6" sx={{ 
+                fontWeight: '600',
+                mb: 3,
+                color: '#1a1a1a',
+                fontSize: '1.1rem'
+              }}>
+                Productos con Más Existencias
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                {productosConExistencias.map((product, index) => (
+                  <Box
+                    key={index}
+                    sx={{
+                      p: 1.5,
+                      borderRadius: '8px',
+                      background: '#f8f9fa',
+                      border: '1px solid #e9ecef',
+                      transition: 'all 0.2s ease',
+                      '&:hover': {
+                        background: '#ffffff',
+                        boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                        borderColor: '#007AFF'
+                      }
+                    }}
+                  >
+                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                      <Box sx={{ flex: 1, minWidth: 0 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 0.5 }}>
+                          <Typography variant="body2" sx={{ 
+                            fontWeight: '600', 
+                            color: '#1a1a1a',
+                            overflow: 'hidden',
+                            textOverflow: 'ellipsis',
+                            whiteSpace: 'nowrap'
                           }}>
-                            {product.existencias}
+                            {product.nombre}
                           </Typography>
                           <Typography variant="caption" sx={{ 
                             color: '#6c757d',
-                            fontSize: '0.65rem'
+                            backgroundColor: '#e9ecef',
+                            px: 0.75,
+                            py: 0.25,
+                            borderRadius: '4px',
+                            fontSize: '0.65rem',
+                            fontWeight: '500'
                           }}>
-                            {product.categoria}
+                            {product.referencia}
+                          </Typography>
+                        </Box>
+                        
+                        <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <Box sx={{ 
+                              width: 4, 
+                              height: 4, 
+                              borderRadius: '50%', 
+                              backgroundColor: '#28a745' 
+                            }} />
+                            <Typography variant="caption" sx={{ 
+                              color: '#28a745',
+                              fontWeight: '600',
+                              fontSize: '0.7rem'
+                            }}>
+                              {product.nacionalizado} Nac
+                            </Typography>
+                          </Box>
+                          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                            <Box sx={{ 
+                              width: 4, 
+                              height: 4, 
+                              borderRadius: '50%', 
+                              backgroundColor: '#ffc107' 
+                            }} />
+                            <Typography variant="caption" sx={{ 
+                              color: '#ffc107',
+                              fontWeight: '600',
+                              fontSize: '0.7rem'
+                            }}>
+                              {product.noNacionalizado} No Nac
+                            </Typography>
+                          </Box>
+                          <Typography variant="caption" sx={{ 
+                            color: '#6c757d',
+                            fontSize: '0.7rem'
+                          }}>
+                            • {product.bodega}
                           </Typography>
                         </Box>
                       </Box>
                       
-                      {Object.keys(product.distribucionBodegas).length > 1 && (
-                        <Box sx={{ 
-                          display: 'flex', 
-                          alignItems: 'center', 
-                          gap: 0.5,
-                          mt: 0.5
+                      <Box sx={{ 
+                        textAlign: 'right',
+                        ml: 1,
+                        minWidth: '50px'
+                      }}>
+                        <Typography variant="body1" sx={{ 
+                          fontWeight: '700',
+                          color: '#007AFF',
+                          lineHeight: 1,
+                          fontSize: '0.9rem'
                         }}>
-                          <Box sx={{ 
-                            width: 4, 
-                            height: 4, 
-                            borderRadius: '50%', 
-                            backgroundColor: '#007AFF' 
-                          }} />
-                          <Typography variant="caption" sx={{ 
-                            color: '#007AFF',
-                            fontWeight: '500',
-                            fontSize: '0.65rem'
-                          }}>
-                            Distribuido en {Object.keys(product.distribucionBodegas).length} bodegas
-                          </Typography>
-                        </Box>
-                      )}
+                          {product.existencias}
+                        </Typography>
+                        <Typography variant="caption" sx={{ 
+                          color: '#6c757d',
+                          fontSize: '0.65rem'
+                        }}>
+                          {product.categoria}
+                        </Typography>
+                      </Box>
                     </Box>
-                  ))}
-                </Box>
+                    
+                    {Object.keys(product.distribucionBodegas).length > 1 && (
+                      <Box sx={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        gap: 0.5,
+                        mt: 0.5
+                      }}>
+                        <Box sx={{ 
+                          width: 4, 
+                          height: 4, 
+                          borderRadius: '50%', 
+                          backgroundColor: '#007AFF' 
+                        }} />
+                        <Typography variant="caption" sx={{ 
+                          color: '#007AFF',
+                          fontWeight: '500',
+                          fontSize: '0.65rem'
+                        }}>
+                          Distribuido en {Object.keys(product.distribucionBodegas).length} bodegas
+                        </Typography>
+                      </Box>
+                    )}
+                  </Box>
+                ))}
+              </Box>
               <Box sx={{ mt: 2, textAlign: 'center' }}>
                 <Button 
                   variant="outlined" 
@@ -593,200 +590,198 @@ function Dashboard() {
           <TopProductsTable />
         </Grid>
 
-                 {/* Información del Sistema */}
-         <Grid item xs={12} lg={4}>
-           <Card sx={{
-             background: '#ffffff',
-             borderRadius: '16px',
-             boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
-             transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-             animation: 'slideInFromBottom 0.8s ease-out 1.2s both',
-             '&:hover': {
-               transform: 'translateY(-4px)',
-               boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
-             },
-             height: '100%'
-           }}>
-             <CardContent>
-                               <Typography variant="h6" sx={{ 
-                  fontWeight: '600',
-                  mb: 3,
-                  color: '#1a1a1a',
-                  fontSize: '1.1rem'
+        {/* Información del Sistema */}
+        <Grid item xs={12} lg={4}>
+          <Card sx={{
+            background: '#ffffff',
+            borderRadius: '16px',
+            boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)',
+            transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+            animation: 'slideInFromBottom 0.8s ease-out 1.2s both',
+            '&:hover': {
+              transform: 'translateY(-4px)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.12)'
+            },
+            height: '100%'
+          }}>
+            <CardContent>
+              <Typography variant="h6" sx={{ 
+                fontWeight: '600',
+                mb: 3,
+                color: '#1a1a1a',
+                fontSize: '1.1rem'
+              }}>
+                Información del Sistema
+              </Typography>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                <Box sx={{
+                  p: 2,
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
+                  border: '1px solid #e9ecef',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    borderColor: '#007AFF'
+                  }
                 }}>
-                  Información del Sistema
-                </Typography>
-                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                  <Box sx={{
-                    p: 2,
-                    borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
-                    border: '1px solid #e9ecef',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                      borderColor: '#007AFF'
-                    }
-                  }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ 
-                          fontWeight: '600', 
-                          color: '#1a1a1a',
-                          mb: 0.5
-                        }}>
-                          {bodegas.length} Bodegas Activas
-                        </Typography>
-                        <Typography variant="caption" sx={{ 
-                          color: '#6c757d',
-                          fontSize: '0.8rem'
-                        }}>
-                          Ubicaciones de almacenamiento
-                        </Typography>
-                      </Box>
-                      <Box sx={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #007AFF 0%, #0056CC 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ 
+                        fontWeight: '600', 
+                        color: '#1a1a1a',
+                        mb: 0.5
                       }}>
-                        <Warehouse sx={{ color: 'white', fontSize: '1.2rem' }} />
-                      </Box>
+                        {bodegas.length} Bodegas Activas
+                      </Typography>
+                      <Typography variant="caption" sx={{ 
+                        color: '#6c757d',
+                        fontSize: '0.8rem'
+                      }}>
+                        Ubicaciones de almacenamiento
+                      </Typography>
                     </Box>
-                  </Box>
-
-                  <Box sx={{
-                    p: 2,
-                    borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
-                    border: '1px solid #e9ecef',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                      borderColor: '#28a745'
-                    }
-                  }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ 
-                          fontWeight: '600', 
-                          color: '#1a1a1a',
-                          mb: 0.5
-                        }}>
-                          {existencias.length} Unidades en Inventario
-                        </Typography>
-                        <Typography variant="caption" sx={{ 
-                          color: '#6c757d',
-                          fontSize: '0.8rem'
-                        }}>
-                          Productos individuales
-                        </Typography>
-                      </Box>
-                      <Box sx={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <SwapHoriz sx={{ color: 'white', fontSize: '1.2rem' }} />
-                      </Box>
-                    </Box>
-                  </Box>
-
-                  <Box sx={{
-                    p: 2,
-                    borderRadius: '12px',
-                    background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
-                    border: '1px solid #e9ecef',
-                    transition: 'all 0.2s ease',
-                    '&:hover': {
-                      transform: 'translateY(-1px)',
-                      boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
-                      borderColor: '#ffc107'
-                    }
-                  }}>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Box>
-                        <Typography variant="subtitle1" sx={{ 
-                          fontWeight: '600', 
-                          color: '#1a1a1a',
-                          mb: 0.5
-                        }}>
-                          {totalMovimientos} Movimientos Totales
-                        </Typography>
-                        <Typography variant="caption" sx={{ 
-                          color: '#6c757d',
-                          fontSize: '0.8rem'
-                        }}>
-                          Actividad del sistema
-                        </Typography>
-                      </Box>
-                      <Box sx={{ 
-                        width: 40, 
-                        height: 40, 
-                        borderRadius: '10px',
-                        background: 'linear-gradient(135deg, #ffc107 0%, #e0a800 100%)',
-                        display: 'flex',
-                        alignItems: 'center',
-                        justifyContent: 'center'
-                      }}>
-                        <TrendingUp sx={{ color: 'white', fontSize: '1.2rem' }} />
-                      </Box>
+                    <Box sx={{ 
+                      width: 40, 
+                      height: 40, 
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #007AFF 0%, #0056CC 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <Warehouse sx={{ color: 'white', fontSize: '1.2rem' }} />
                     </Box>
                   </Box>
                 </Box>
-             </CardContent>
-           </Card>
-         </Grid>
-       </Grid>
 
-       
+                <Box sx={{
+                  p: 2,
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
+                  border: '1px solid #e9ecef',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    borderColor: '#28a745'
+                  }
+                }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ 
+                        fontWeight: '600', 
+                        color: '#1a1a1a',
+                        mb: 0.5
+                      }}>
+                        {existencias.length} Unidades en Inventario
+                      </Typography>
+                      <Typography variant="caption" sx={{ 
+                        color: '#6c757d',
+                        fontSize: '0.8rem'
+                      }}>
+                        Productos individuales
+                      </Typography>
+                    </Box>
+                    <Box sx={{ 
+                      width: 40, 
+                      height: 40, 
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <SwapHoriz sx={{ color: 'white', fontSize: '1.2rem' }} />
+                    </Box>
+                  </Box>
+                </Box>
 
-       {/* Quick Actions */}
-       <Box sx={{ 
-         mt: 4,
-         animation: 'slideInFromBottom 0.8s ease-out 1.4s both'
-       }}>
-                 <Typography 
-           variant="h5" 
-           gutterBottom 
-           sx={{ 
-             fontWeight: '500',
-             textAlign: 'center',
-             mb: 3,
-             color: '#333'
-           }}
-         >
-           Acciones Rápidas
-         </Typography>
+                <Box sx={{
+                  p: 2,
+                  borderRadius: '12px',
+                  background: 'linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%)',
+                  border: '1px solid #e9ecef',
+                  transition: 'all 0.2s ease',
+                  '&:hover': {
+                    transform: 'translateY(-1px)',
+                    boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                    borderColor: '#ffc107'
+                  }
+                }}>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Box>
+                      <Typography variant="subtitle1" sx={{ 
+                        fontWeight: '600', 
+                        color: '#1a1a1a',
+                        mb: 0.5
+                      }}>
+                        {totalMovimientos} Movimientos Totales
+                      </Typography>
+                      <Typography variant="caption" sx={{ 
+                        color: '#6c757d',
+                        fontSize: '0.8rem'
+                      }}>
+                        Actividad del sistema
+                      </Typography>
+                    </Box>
+                    <Box sx={{ 
+                      width: 40, 
+                      height: 40, 
+                      borderRadius: '10px',
+                      background: 'linear-gradient(135deg, #ffc107 0%, #e0a800 100%)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center'
+                    }}>
+                      <TrendingUp sx={{ color: 'white', fontSize: '1.2rem' }} />
+                    </Box>
+                  </Box>
+                </Box>
+              </Box>
+            </CardContent>
+          </Card>
+        </Grid>
+      </Grid>
+
+      {/* Quick Actions */}
+      <Box sx={{ 
+        mt: 4,
+        animation: 'slideInFromBottom 0.8s ease-out 1.4s both'
+      }}>
+        <Typography 
+          variant="h5" 
+          gutterBottom 
+          sx={{ 
+            fontWeight: '500',
+            textAlign: 'center',
+            mb: 3,
+            color: '#333'
+          }}
+        >
+          Acciones Rápidas
+        </Typography>
         <Grid container spacing={3} justifyContent="center">
           <Grid item>
             <Button 
               variant="contained" 
               startIcon={<Add />} 
-                             sx={{
-                 background: '#007AFF',
-                 borderRadius: '12px',
-                 px: 3,
-                 py: 1.5,
-                 textTransform: 'none',
-                 fontSize: '16px',
-                 fontWeight: '500',
-                 boxShadow: '0 2px 8px rgba(0, 122, 255, 0.2)',
-                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                 '&:hover': {
-                   transform: 'translateY(-2px)',
-                   boxShadow: '0 4px 16px rgba(0, 122, 255, 0.3)'
-                 }
-               }}
+              sx={{
+                background: '#007AFF',
+                borderRadius: '12px',
+                px: 3,
+                py: 1.5,
+                textTransform: 'none',
+                fontSize: '16px',
+                fontWeight: '500',
+                boxShadow: '0 2px 8px rgba(0, 122, 255, 0.2)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 16px rgba(0, 122, 255, 0.3)'
+                }
+              }}
             >
               Nuevo Cliente
             </Button>
@@ -795,21 +790,21 @@ function Dashboard() {
             <Button 
               variant="contained" 
               startIcon={<LocalShipping />} 
-                             sx={{
-                 background: '#FF3B30',
-                 borderRadius: '12px',
-                 px: 3,
-                 py: 1.5,
-                 textTransform: 'none',
-                 fontSize: '16px',
-                 fontWeight: '500',
-                 boxShadow: '0 2px 8px rgba(255, 59, 48, 0.2)',
-                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                 '&:hover': {
-                   transform: 'translateY(-2px)',
-                   boxShadow: '0 4px 16px rgba(255, 59, 48, 0.3)'
-                 }
-               }}
+              sx={{
+                background: '#FF3B30',
+                borderRadius: '12px',
+                px: 3,
+                py: 1.5,
+                textTransform: 'none',
+                fontSize: '16px',
+                fontWeight: '500',
+                boxShadow: '0 2px 8px rgba(255, 59, 48, 0.2)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 16px rgba(255, 59, 48, 0.3)'
+                }
+              }}
             >
               Nueva Guía de Carga
             </Button>
@@ -818,21 +813,21 @@ function Dashboard() {
             <Button 
               variant="contained" 
               startIcon={<Inventory />} 
-                             sx={{
-                 background: '#34C759',
-                 borderRadius: '12px',
-                 px: 3,
-                 py: 1.5,
-                 textTransform: 'none',
-                 fontSize: '16px',
-                 fontWeight: '500',
-                 boxShadow: '0 2px 8px rgba(52, 199, 89, 0.2)',
-                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                 '&:hover': {
-                   transform: 'translateY(-2px)',
-                   boxShadow: '0 4px 16px rgba(52, 199, 89, 0.3)'
-                 }
-               }}
+              sx={{
+                background: '#34C759',
+                borderRadius: '12px',
+                px: 3,
+                py: 1.5,
+                textTransform: 'none',
+                fontSize: '16px',
+                fontWeight: '500',
+                boxShadow: '0 2px 8px rgba(52, 199, 89, 0.2)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 16px rgba(52, 199, 89, 0.3)'
+                }
+              }}
             >
               Nuevo Producto
             </Button>
@@ -841,21 +836,21 @@ function Dashboard() {
             <Button 
               variant="contained" 
               startIcon={<TrendingUp />} 
-                             sx={{
-                 background: '#FF9500',
-                 borderRadius: '12px',
-                 px: 3,
-                 py: 1.5,
-                 textTransform: 'none',
-                 fontSize: '16px',
-                 fontWeight: '500',
-                 boxShadow: '0 2px 8px rgba(255, 149, 0, 0.2)',
-                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-                 '&:hover': {
-                   transform: 'translateY(-2px)',
-                   boxShadow: '0 4px 16px rgba(255, 149, 0, 0.3)'
-                 }
-               }}
+              sx={{
+                background: '#FF9500',
+                borderRadius: '12px',
+                px: 3,
+                py: 1.5,
+                textTransform: 'none',
+                fontSize: '16px',
+                fontWeight: '500',
+                boxShadow: '0 2px 8px rgba(255, 149, 0, 0.2)',
+                transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+                '&:hover': {
+                  transform: 'translateY(-2px)',
+                  boxShadow: '0 4px 16px rgba(255, 149, 0, 0.3)'
+                }
+              }}
             >
               Nuevo Movimiento
             </Button>

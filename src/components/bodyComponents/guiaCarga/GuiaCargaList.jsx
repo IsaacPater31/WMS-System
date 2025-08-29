@@ -1,7 +1,7 @@
 import { Component } from "react";
-import { Avatar, Box, Typography, Chip, Button } from "@mui/material";
+import { Avatar, Box, Typography, Chip, Button, IconButton, Tooltip } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Inventory } from "@mui/icons-material";
+import { Inventory, PictureAsPdf, Visibility } from "@mui/icons-material";
 // import { guiasCarga } from "./GuiasCarga"; // Ya no necesitamos importar los datos estáticos
 import GuiaCargaDetailsModal from "./GuiaCargaDetailsModal";
 import UnidadesCargaModal from "./UnidadesCargaModal";
@@ -49,6 +49,13 @@ export default class GuiaCargaList extends Component {
       unidadesModalOpen: false,
       selectedGuiaForUnidades: null,
     });
+  };
+
+  handleViewDocument = (guia) => {
+    if (guia.documento_carga) {
+      // Abrir el PDF en una nueva pestaña
+      window.open(guia.documento_carga, '_blank');
+    }
   };
 
   formatDate = (dateString) => {
@@ -141,6 +148,51 @@ export default class GuiaCargaList extends Component {
          description: "Espacio ocupado en metros cuadrados",
          type: 'number',
          valueGetter: (params) => `${params.row.espacio_ocupado} m²`,
+       },
+       {
+         field: "documento_carga",
+         headerName: "Documento de Carga",
+         width: 180,
+         description: "Documento PDF asociado a la guía",
+         sortable: false,
+         renderCell: (params) => {
+           const hasDocument = params.row.documento_carga;
+           return (
+             <Box sx={{ display: 'flex', gap: 1 }}>
+               {hasDocument ? (
+                 <>
+                   <Tooltip title="Ver documento">
+                     <IconButton
+                       size="small"
+                       color="primary"
+                       onClick={(e) => {
+                         e.stopPropagation();
+                         this.handleViewDocument(params.row);
+                       }}
+                       sx={{ 
+                         backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                         '&:hover': {
+                           backgroundColor: 'rgba(25, 118, 210, 0.12)'
+                         }
+                       }}
+                     >
+                       <Visibility sx={{ fontSize: 16 }} />
+                     </IconButton>
+                   </Tooltip>
+                 </>
+               ) : (
+                 <Chip
+                   label="Sin documento"
+                   size="small"
+                   variant="outlined"
+                   color="default"
+                   icon={<PictureAsPdf />}
+                   sx={{ fontSize: '0.75rem' }}
+                 />
+               )}
+             </Box>
+           );
+         },
        },
        {
          field: "acciones",

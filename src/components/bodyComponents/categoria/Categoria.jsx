@@ -1,72 +1,72 @@
 import React, { Component } from "react";
-import CustomerList from "./CustomerList";
-import CustomerForm from "./CustomerForm";
+import CategoriaList from "./CategoriaList";
+import CategoriaForm from "./CategoriaForm";
 import { Box, Button, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
-export default class Customer extends Component {
+export default class Categoria extends Component {
   constructor(props) {
     super(props);
     this.state = {
       formOpen: false,
-      editingCustomer: null,
+      editingCategoria: null,
     };
   }
 
-  handleAddCustomer = () => {
+  handleAddCategoria = () => {
     this.setState({
       formOpen: true,
-      editingCustomer: null,
+      editingCategoria: null,
     });
   };
 
-  handleEditCustomer = (customer) => {
+  handleEditCategoria = (categoria) => {
     this.setState({
       formOpen: true,
-      editingCustomer: customer,
+      editingCategoria: categoria,
     });
   };
 
   handleCloseForm = () => {
     this.setState({
       formOpen: false,
-      editingCustomer: null,
+      editingCategoria: null,
     });
   };
 
-  handleSaveCustomer = (customerData) => {
+  handleSaveCategoria = (categoriaData) => {
     // Aquí se implementaría la lógica para guardar en la base de datos
-    console.log("Guardando cliente:", customerData);
+    console.log("Guardando categoría:", categoriaData);
     
     // Por ahora, solo cerramos el formulario
     this.handleCloseForm();
     
     // En una implementación real, aquí se haría una llamada a la API
-    // y se actualizaría la lista de clientes
+    // y se actualizaría la lista de categorías
   };
 
   render() {
     return (
-      <ResponsiveCustomer 
-        onAddCustomer={this.handleAddCustomer}
-        onEditCustomer={this.handleEditCustomer}
+      <ResponsiveCategoria 
+        onAddCategoria={this.handleAddCategoria}
+        onEditCategoria={this.handleEditCategoria}
         onCloseForm={this.handleCloseForm}
-        onSaveCustomer={this.handleSaveCustomer}
+        onSaveCategoria={this.handleSaveCategoria}
         formOpen={this.state.formOpen}
-        editingCustomer={this.state.editingCustomer}
+        editingCategoria={this.state.editingCategoria}
       />
     );
   }
 }
 
 // Componente funcional para manejar la responsividad
-function ResponsiveCustomer({ 
-  onAddCustomer, 
-  onEditCustomer, 
+function ResponsiveCategoria({ 
+  onAddCategoria, 
+  onEditCategoria, 
   onCloseForm, 
-  onSaveCustomer, 
+  onSaveCategoria, 
   formOpen, 
-  editingCustomer 
+  editingCategoria 
 }) {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('md'));
@@ -97,13 +97,13 @@ function ResponsiveCustomer({
             mb: isMobile ? 1 : 0
           }}
         >
-          Clientes
+          Categorías
         </Typography>
         <Button
           variant="contained"
           color="primary"
           startIcon={<Add />}
-          onClick={onAddCustomer}
+          onClick={onAddCategoria}
           sx={{
             borderRadius: 2,
             textTransform: 'none',
@@ -113,21 +113,21 @@ function ResponsiveCustomer({
             minWidth: isMobile ? 'auto' : 150
           }}
         >
-          Nuevo Cliente
+          Nueva Categoría
         </Button>
       </Box>
       
-      <CustomerList 
-        onEditCustomer={onEditCustomer}
+      <CategoriaList 
+        onEditCategoria={onEditCategoria}
         isMobile={isMobile}
         isTablet={isTablet}
       />
       
-      <CustomerForm
+      <CategoriaForm
         open={formOpen}
         onClose={onCloseForm}
-        customer={editingCustomer}
-        onSave={onSaveCustomer}
+        categoria={editingCategoria}
+        onSave={onSaveCategoria}
         isMobile={isMobile}
       />
     </Box>

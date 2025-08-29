@@ -30,15 +30,13 @@ export default function TopProductsTable() {
     const bodegaPrincipal = Object.entries(existenciasPorBodega)
       .sort(([,a], [,b]) => b - a)[0]?.[0] || "Sin bodega";
     
-    return {
-      name: producto.nombre,
-      categoria: producto.categoria?.nombre || "Sin categoría",
-      existencias: totalExistencias,
-      bodega: bodegaPrincipal,
-      precio: producto.precio || 0,
-      valorTotal: (producto.precio || 0) * totalExistencias,
-      distribucionBodegas: existenciasPorBodega
-    };
+         return {
+       name: producto.nombre,
+       categoria: producto.categoria?.nombre || "Sin categoría",
+       existencias: totalExistencias,
+       bodega: bodegaPrincipal,
+       distribucionBodegas: existenciasPorBodega
+     };
   })
   .filter(p => p.existencias > 0)
   .sort((a, b) => b.existencias - a.existencias)
@@ -77,8 +75,7 @@ export default function TopProductsTable() {
               <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>Categoría</TableCell>
               <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>Existencias</TableCell>
               <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>Bodega</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>Precio</TableCell>
-              <TableCell sx={{ fontWeight: "bold", fontSize: "14px" }}>Valor Total</TableCell>
+
             </TableRow>
           </TableHead>
           <TableBody>
@@ -111,24 +108,19 @@ export default function TopProductsTable() {
                     sx={{ fontWeight: "bold" }}
                   />
                 </TableCell>
-                                 <TableCell sx={{ fontSize: "13px", color: "#666" }}>
-                   <Box>
-                     <Typography variant="body2" sx={{ fontWeight: 500 }}>
-                       {product.bodega}
-                     </Typography>
-                     {Object.keys(product.distribucionBodegas).length > 1 && (
-                       <Typography variant="caption" sx={{ color: "#888" }}>
-                         +{Object.keys(product.distribucionBodegas).length - 1} bodegas más
-                       </Typography>
-                     )}
-                   </Box>
-                 </TableCell>
-                <TableCell sx={{ fontWeight: 500 }}>
-                  ${product.precio.toFixed(2)}
+                <TableCell sx={{ fontSize: "13px", color: "#666" }}>
+                  <Box>
+                    <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                      {product.bodega}
+                    </Typography>
+                    {Object.keys(product.distribucionBodegas).length > 1 && (
+                      <Typography variant="caption" sx={{ color: "#888" }}>
+                        +{Object.keys(product.distribucionBodegas).length - 1} bodegas más
+                      </Typography>
+                    )}
+                  </Box>
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "#1976d2" }}>
-                  ${product.valorTotal.toFixed(2)}
-                </TableCell>
+
               </TableRow>
             ))}
           </TableBody>

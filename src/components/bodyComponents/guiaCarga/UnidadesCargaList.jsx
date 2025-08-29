@@ -14,6 +14,11 @@ import {
   Chip,
   Avatar,
   Divider,
+  useTheme,
+  useMediaQuery,
+  Card,
+  CardContent,
+  Grid,
 } from "@mui/material";
 import {
   Add,
@@ -30,6 +35,9 @@ export default function UnidadesCargaList({
   guiaId,
   disabled = false 
 }) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  
   const [unidadFormOpen, setUnidadFormOpen] = useState(false);
   const [editingUnidad, setEditingUnidad] = useState(null);
 
@@ -95,164 +103,265 @@ export default function UnidadesCargaList({
         display: 'flex', 
         justifyContent: 'space-between', 
         alignItems: 'center', 
-        mb: 2 
+        mb: 3,
+        flexWrap: 'wrap',
+        gap: 2
       }}>
         <Box>
-          <Typography variant="h6" sx={{ display: 'flex', alignItems: 'center' }}>
-            <Inventory sx={{ mr: 1 }} />
-            Unidades de Carga
+          <Typography variant="h6" sx={{ fontWeight: '600', mb: 1 }}>
+            Unidades de Carga ({unidades.length})
           </Typography>
           <Typography variant="body2" color="text.secondary">
-            {unidades.length} unidad{unidades.length !== 1 ? 'es' : ''} | 
             Peso total: {calcularPesoTotal().toFixed(2)} kg
           </Typography>
         </Box>
-        {!disabled && (
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add />}
-            onClick={handleAddUnidad}
-            size="small"
-          >
-            Agregar Unidad
-          </Button>
-        )}
+        <Button
+          variant="contained"
+          startIcon={<Add />}
+          onClick={handleAddUnidad}
+          disabled={disabled}
+          size={isMobile ? "large" : "medium"}
+          sx={{
+            fontWeight: '500',
+            borderRadius: 2,
+            textTransform: 'none',
+            letterSpacing: '0.025em',
+            boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+            '&:hover': {
+              boxShadow: '0 4px 8px rgba(0, 0, 0, 0.15)'
+            }
+          }}
+        >
+          Agregar Unidad
+        </Button>
       </Box>
 
-      {/* Tabla de unidades */}
-      <TableContainer component={Paper} sx={{ mb: 2 }}>
-        <Table size="small">
-          <TableHead>
-            <TableRow sx={{ backgroundColor: 'primary.main' }}>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '80px' }}>
-                ID
-              </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
-                Tipo
-              </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
-                Peso
-              </TableCell>
-              <TableCell sx={{ color: 'white', fontWeight: 'bold' }}>
-                Descripción
-              </TableCell>
-              {!disabled && (
-                <TableCell sx={{ color: 'white', fontWeight: 'bold', width: '120px' }}>
-                  Acciones
-                </TableCell>
-              )}
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {unidades.length > 0 ? (
-              unidades.map((unidad) => (
-                <TableRow key={unidad.idUnidad} hover>
-                  <TableCell>
+      {unidades.length === 0 ? (
+        <Paper sx={{ 
+          p: { xs: 3, sm: 4 }, 
+          textAlign: 'center', 
+          borderRadius: 3,
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          bgcolor: 'rgba(0, 0, 0, 0.02)'
+        }}>
+          <Inventory sx={{ fontSize: 60, color: 'text.secondary', mb: 2 }} />
+          <Typography variant="h6" color="text.secondary" sx={{ mb: 1 }}>
+            No hay unidades de carga
+          </Typography>
+          <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+            Agrega unidades de carga para comenzar a gestionar tu guía
+          </Typography>
+          <Button
+            variant="outlined"
+            startIcon={<Add />}
+            onClick={handleAddUnidad}
+            disabled={disabled}
+            size={isMobile ? "large" : "medium"}
+            sx={{
+              fontWeight: '500',
+              borderRadius: 2,
+              textTransform: 'none',
+              letterSpacing: '0.025em',
+              borderWidth: 1.5
+            }}
+          >
+            Agregar Primera Unidad
+          </Button>
+        </Paper>
+      ) : isMobile ? (
+        // Vista de tarjetas para móvil
+        <Grid container spacing={2}>
+          {unidades.map((unidad) => (
+            <Grid item xs={12} key={unidad.idUnidad}>
+              <Card sx={{ 
+                borderRadius: 3, 
+                border: '1px solid rgba(0, 0, 0, 0.06)',
+                boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)',
+                transition: 'all 0.2s ease-in-out',
+                '&:hover': {
+                  boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                  transform: 'translateY(-2px)'
+                }
+              }}>
+                <CardContent sx={{ p: { xs: 2, sm: 3 } }}>
+                  {/* Header de la tarjeta */}
+                  <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                       <Avatar
-                        sx={{ 
-                          width: 24, 
-                          height: 24, 
+                        sx={{
+                          width: 32,
+                          height: 32,
+                          backgroundColor: 'rgba(25, 118, 210, 0.08)',
+                          color: 'primary.main',
                           mr: 1,
-                          backgroundColor: 'primary.main',
-                          fontSize: '0.7rem'
+                          borderRadius: 1
                         }}
                       >
-                        {unidad.idUnidad}
+                        <Inventory sx={{ fontSize: 16 }} />
                       </Avatar>
-                      <Typography variant="body2" fontWeight="bold">
+                      <Typography variant="body2" fontWeight="600" color="primary.main">
                         {unidad.idUnidad}
                       </Typography>
                     </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Chip 
+                    <Chip
                       label={unidad.tipo_unidad}
                       color={getTipoUnidadColor(unidad.tipo_unidad)}
                       size="small"
                       variant="outlined"
+                      sx={{ fontWeight: '500', fontSize: '0.75rem' }}
+                    />
+                  </Box>
+
+                  {/* Información de la unidad */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                      Descripción
+                    </Typography>
+                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: '0.875rem' }}>
+                      {unidad.descripcion}
+                    </Typography>
+                  </Box>
+
+                  {/* Peso */}
+                  <Box sx={{ mb: 2 }}>
+                    <Typography variant="body2" color="text.secondary" sx={{ fontSize: '0.75rem', mb: 0.5 }}>
+                      Peso Bruto
+                    </Typography>
+                    <Typography variant="body1" fontWeight="500" sx={{ fontSize: '0.875rem', color: 'primary.main' }}>
+                      {unidad.peso_bruto} kg
+                    </Typography>
+                  </Box>
+
+                  {/* Acciones */}
+                  <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: 1,
+                    pt: 1,
+                    borderTop: '1px solid rgba(0, 0, 0, 0.06)'
+                  }}>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleEditUnidad(unidad)}
+                      disabled={disabled}
+                      sx={{
+                        color: 'text.secondary',
+                        '&:hover': {
+                          backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                          color: 'text.primary'
+                        }
+                      }}
+                    >
+                      <Edit sx={{ fontSize: 16 }} />
+                    </IconButton>
+                    <IconButton
+                      size="small"
+                      onClick={() => handleDeleteUnidad(unidad.idUnidad)}
+                      disabled={disabled}
+                      sx={{
+                        color: 'text.secondary',
+                        '&:hover': {
+                          backgroundColor: 'rgba(211, 47, 47, 0.04)',
+                          color: 'error.main'
+                        }
+                      }}
+                    >
+                      <Delete sx={{ fontSize: 16 }} />
+                    </IconButton>
+                  </Box>
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      ) : (
+        // Vista de tabla para desktop
+        <TableContainer component={Paper} sx={{ 
+          borderRadius: 3, 
+          border: '1px solid rgba(0, 0, 0, 0.06)',
+          boxShadow: '0 1px 3px rgba(0, 0, 0, 0.05)'
+        }}>
+          <Table>
+            <TableHead>
+              <TableRow sx={{ backgroundColor: 'rgba(0, 0, 0, 0.02)' }}>
+                <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>ID</TableCell>
+                <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Tipo</TableCell>
+                <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Descripción</TableCell>
+                <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Peso (kg)</TableCell>
+                <TableCell sx={{ fontWeight: '600', fontSize: '0.875rem' }}>Acciones</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {unidades.map((unidad) => (
+                <TableRow 
+                  key={unidad.idUnidad}
+                  sx={{ 
+                    '&:hover': { 
+                      backgroundColor: 'rgba(0, 0, 0, 0.02)' 
+                    } 
+                  }}
+                >
+                  <TableCell>
+                    <Typography variant="body2" fontWeight="600" color="primary.main">
+                      {unidad.idUnidad}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Chip
+                      label={unidad.tipo_unidad}
+                      color={getTipoUnidadColor(unidad.tipo_unidad)}
+                      size="small"
+                      variant="outlined"
+                      sx={{ fontWeight: '500', fontSize: '0.75rem' }}
                     />
                   </TableCell>
                   <TableCell>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      <Scale sx={{ mr: 1, fontSize: '1rem', color: 'text.secondary' }} />
-                      <Typography variant="body2">
-                        {unidad.peso_bruto} kg
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell>
-                    <Typography variant="body2" sx={{ 
-                      maxWidth: 200, 
-                      overflow: 'hidden', 
-                      textOverflow: 'ellipsis',
-                      whiteSpace: 'nowrap'
-                    }}>
+                    <Typography variant="body2" sx={{ maxWidth: 200 }}>
                       {unidad.descripcion}
                     </Typography>
                   </TableCell>
-                  {!disabled && (
-                    <TableCell>
-                      <Box sx={{ display: 'flex', gap: 0.5 }}>
-                        <IconButton
-                          size="small"
-                          color="primary"
-                          onClick={() => handleEditUnidad(unidad)}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          color="error"
-                          onClick={() => handleDeleteUnidad(unidad.idUnidad)}
-                        >
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </TableCell>
-                  )}
+                  <TableCell>
+                    <Typography variant="body2" fontWeight="500" color="primary.main">
+                      {unidad.peso_bruto}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleEditUnidad(unidad)}
+                        disabled={disabled}
+                        sx={{
+                          color: 'text.secondary',
+                          '&:hover': {
+                            backgroundColor: 'rgba(0, 0, 0, 0.04)',
+                            color: 'text.primary'
+                          }
+                        }}
+                      >
+                        <Edit sx={{ fontSize: 16 }} />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={() => handleDeleteUnidad(unidad.idUnidad)}
+                        disabled={disabled}
+                        sx={{
+                          color: 'text.secondary',
+                          '&:hover': {
+                            backgroundColor: 'rgba(211, 47, 47, 0.04)',
+                            color: 'error.main'
+                          }
+                        }}
+                      >
+                        <Delete sx={{ fontSize: 16 }} />
+                      </IconButton>
+                    </Box>
+                  </TableCell>
                 </TableRow>
-              ))
-            ) : (
-              <TableRow>
-                <TableCell colSpan={disabled ? 4 : 5} align="center" sx={{ py: 3 }}>
-                  <Typography variant="body2" color="text.secondary">
-                    {disabled 
-                      ? "No hay unidades de carga registradas" 
-                      : "No hay unidades de carga. Haz clic en 'Agregar Unidad' para comenzar."
-                    }
-                  </Typography>
-                </TableCell>
-              </TableRow>
-            )}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      {/* Resumen de tipos */}
-      {unidades.length > 0 && (
-        <Box sx={{ p: 2, bgcolor: 'grey.50', borderRadius: 2 }}>
-          <Typography variant="subtitle2" sx={{ mb: 1 }}>
-            Resumen por tipo:
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {Object.entries(
-              unidades.reduce((acc, unidad) => {
-                acc[unidad.tipo_unidad] = (acc[unidad.tipo_unidad] || 0) + 1;
-                return acc;
-              }, {})
-            ).map(([tipo, cantidad]) => (
-              <Chip
-                key={tipo}
-                label={`${tipo}: ${cantidad}`}
-                color={getTipoUnidadColor(tipo)}
-                size="small"
-                variant="outlined"
-              />
-            ))}
-          </Box>
-        </Box>
+              ))}
+            </TableBody>
+          </Table>
+        </TableContainer>
       )}
 
       {/* Modal de formulario de unidad */}
@@ -261,7 +370,6 @@ export default function UnidadesCargaList({
         onClose={handleCloseUnidadForm}
         unidad={editingUnidad}
         onSave={handleSaveUnidad}
-        onDelete={handleDeleteUnidad}
         guiaId={guiaId}
         existingUnidades={unidades}
       />

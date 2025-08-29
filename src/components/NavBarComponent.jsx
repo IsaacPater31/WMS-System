@@ -68,7 +68,7 @@ export default function NavBarComponent() {
                     textDecoration: "none",
                   }}
                 >
-                  ADIMS
+                  WMS-WAREHOUSE MANAGEMENT SYSTEM
                 </Typography>
 
                 <Box
@@ -107,7 +107,7 @@ export default function NavBarComponent() {
                       <Avatar sx={{ width: 32, height: 32 }}>Z</Avatar>
                     </Tooltip>
                   </IconButton>
-                  <Typography fontFamily={"Inter"}>ADMI ZAKARYAE</Typography>
+                  <Typography fontFamily={"Inter"}>COMERCOL</Typography>
                 </Box>
 
                 <Menu

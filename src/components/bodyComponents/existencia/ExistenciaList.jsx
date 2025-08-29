@@ -267,11 +267,7 @@ export default class ExistenciaList extends Component {
           disableRowSelectionOnClick
           autoHeight
           onRowClick={this.handleRowClick}
-          getRowClassName={(params) => {
-            if (params.row.estado === 'NACIONALIZADO') return 'success-row';
-            if (params.row.estado === 'NO_NACIONALIZADO') return 'warning-row';
-            return '';
-          }}
+
         />
         
         <ExistenciaDetailsModal

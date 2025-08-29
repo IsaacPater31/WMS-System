@@ -1,110 +1,51 @@
-const unidadesCarga = [
-  // Guía 1 - 2 unidades de carga (5 productos total)
+export const unidadesCarga = [
   {
-    idUnidad: "UC-001",
+    idUnidad: 1,
     tipo_unidad: "Pallet",
-    peso_bruto: "7.5",
-    GUIA_DE_CARGA_idGuia: 1,
-    descripcion: "Pallet con laptops HP Pavilion"
+    descripcion: "Pallet de madera estándar para laptops",
+    peso_bruto: 25.0, // 8 laptops × 2.5kg + pallet = 20kg + 5kg = 25kg
+    GUIA_DE_CARGA_idGuia: 1
   },
   {
-    idUnidad: "UC-002",
+    idUnidad: 2,
     tipo_unidad: "Caja",
-    peso_bruto: "5.0",
-    GUIA_DE_CARGA_idGuia: 1,
-    descripcion: "Caja con mouses Logitech"
-  },
-  // Guía 2 - 2 unidades de carga (3 productos total)
-  {
-    idUnidad: "UC-003",
-    tipo_unidad: "Pallet",
-    peso_bruto: "4.0",
-    GUIA_DE_CARGA_idGuia: 2,
-    descripcion: "Pallet con teclados mecánicos"
+    descripcion: "Caja de cartón corrugado para mouses",
+    peso_bruto: 6.5, // 12 mouses × 0.121kg + caja = 1.45kg + 5kg = 6.5kg
+    GUIA_DE_CARGA_idGuia: 1
   },
   {
-    idUnidad: "UC-004",
+    idUnidad: 3,
     tipo_unidad: "Caja",
-    peso_bruto: "2.0",
-    GUIA_DE_CARGA_idGuia: 2,
-    descripcion: "Caja con teclado adicional"
-  },
-  // Guía 3 - 2 unidades de carga (3 productos total)
-  {
-    idUnidad: "UC-005",
-    tipo_unidad: "Contenedor Refrigerado",
-    peso_bruto: "2.0",
-    GUIA_DE_CARGA_idGuia: 3,
-    descripcion: "Contenedor con productos refrigerados"
+    descripcion: "Caja de herramientas para destornilladores",
+    peso_bruto: 7.5, // 15 destornilladores × 0.3kg + caja = 4.5kg + 3kg = 7.5kg
+    GUIA_DE_CARGA_idGuia: 2
   },
   {
-    idUnidad: "UC-006",
+    idUnidad: 4,
+    tipo_unidad: "Saco",
+    descripcion: "Saco de yute para café colombiano",
+    peso_bruto: 22.0, // 20 sacos × 1kg + saco = 20kg + 2kg = 22kg
+    GUIA_DE_CARGA_idGuia: 3
+  },
+  {
+    idUnidad: 5,
     tipo_unidad: "Caja",
-    peso_bruto: "2.5",
-    GUIA_DE_CARGA_idGuia: 3,
-    descripcion: "Caja con leche entera"
-  },
-  // Guía 4 - 2 unidades de carga (2 productos total)
-  {
-    idUnidad: "UC-007",
-    tipo_unidad: "Pallet",
-    peso_bruto: "4.0",
-    GUIA_DE_CARGA_idGuia: 4,
-    descripcion: "Pallet con herramientas industriales"
+    descripcion: "Caja de cartón para camisetas",
+    peso_bruto: 7.5, // 25 camisetas × 0.2kg + caja = 5kg + 2.5kg = 7.5kg
+    GUIA_DE_CARGA_idGuia: 4
   },
   {
-    idUnidad: "UC-008",
+    idUnidad: 6,
+    tipo_unidad: "Tambor",
+    descripcion: "Tambor metálico para aceite de oliva importado",
+    peso_bruto: 17.0, // 18 aceites × 0.5kg + tambor = 9kg + 8kg = 17kg
+    GUIA_DE_CARGA_idGuia: 5
+  },
+  {
+    idUnidad: 7,
     tipo_unidad: "Caja",
-    peso_bruto: "4.0",
-    GUIA_DE_CARGA_idGuia: 4,
-    descripcion: "Caja con destornilladores"
-  },
-  // Guía 5 - 2 unidades de carga (2 productos total)
-  {
-    idUnidad: "UC-009",
-    tipo_unidad: "Pallet",
-    peso_bruto: "3.0",
-    GUIA_DE_CARGA_idGuia: 5,
-    descripcion: "Pallet con aceite de motor"
-  },
-  {
-    idUnidad: "UC-010",
-    tipo_unidad: "Caja",
-    peso_bruto: "3.0",
-    GUIA_DE_CARGA_idGuia: 5,
-    descripcion: "Caja con filtros de aire"
-  },
-  // Guía 6 - 2 unidades de carga (2 productos total)
-  {
-    idUnidad: "UC-011",
-    tipo_unidad: "Caja",
-    peso_bruto: "1.5",
-    GUIA_DE_CARGA_idGuia: 6,
-    descripcion: "Caja con juguetes educativos"
-  },
-  {
-    idUnidad: "UC-012",
-    tipo_unidad: "Caja",
-    peso_bruto: "1.5",
-    GUIA_DE_CARGA_idGuia: 6,
-    descripcion: "Caja con videojuegos"
-  },
-  // Guía 7 - 1 unidad de carga (2 productos total)
-  {
-    idUnidad: "UC-013",
-    tipo_unidad: "Pallet",
-    peso_bruto: "4.0",
-    GUIA_DE_CARGA_idGuia: 7,
-    descripcion: "Pallet con productos para el hogar"
-  },
-  // Guía 8 - 1 unidad de carga (3 productos total)
-  {
-    idUnidad: "UC-014",
-    tipo_unidad: "Pallet",
-    peso_bruto: "6.0",
-    GUIA_DE_CARGA_idGuia: 8,
-    descripcion: "Pallet con artículos deportivos"
+    descripcion: "Caja de cartón para smartphones importados",
+    peso_bruto: 5.0, // 10 smartphones × 0.2kg + caja = 2kg + 3kg = 5kg
+    GUIA_DE_CARGA_idGuia: 5
   }
 ];
-
-export { unidadesCarga };

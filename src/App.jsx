@@ -13,6 +13,7 @@ import Customer from "./components/bodyComponents/customer/Customer";
 import GuiaCarga from "./components/bodyComponents/guiaCarga/GuiaCarga";
 import Inventario from "./components/bodyComponents/inventario/Inventario";
 import Producto from "./components/bodyComponents/producto/Producto";
+import Categoria from "./components/bodyComponents/categoria/Categoria";
 import Bodega from "./components/bodyComponents/bodega/Bodega";
 import Existencia from "./components/bodyComponents/existencia/Existencia";
 
@@ -67,6 +68,7 @@ function App() {
         <Route path="guias-carga" element={<GuiaCarga />} />
         <Route path="inventario" element={<Inventario />} />
         <Route path="productos" element={<Producto />} />
+        <Route path="categorias" element={<Categoria />} />
         <Route path="existencias" element={<Existencia />} />
         <Route path="bodegas" element={<Bodega />} />
         <Route path="movimientos" element={<Movimiento />} />

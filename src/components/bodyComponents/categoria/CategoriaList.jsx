@@ -13,21 +13,21 @@ import {
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Edit, Visibility, Delete } from "@mui/icons-material";
-import { customers } from "./Customers";
-import CustomerDetailsModal from "./CustomerDetailsModal";
+import { categorias } from "./Categorias";
+import CategoriaDetailsModal from "./CategoriaDetailsModal";
 
-export default class CustomerList extends Component {
+export default class CategoriaList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      selectedCustomer: null,
+      selectedCategoria: null,
       modalOpen: false,
     };
   }
 
   handleRowClick = (params) => {
     this.setState({
-      selectedCustomer: params.row,
+      selectedCategoria: params.row,
       modalOpen: true,
     });
   };
@@ -35,13 +35,13 @@ export default class CustomerList extends Component {
   handleCloseModal = () => {
     this.setState({
       modalOpen: false,
-      selectedCustomer: null,
+      selectedCategoria: null,
     });
   };
 
-  handleEditCustomer = (customer) => {
-    if (this.props.onEditCustomer) {
-      this.props.onEditCustomer(customer);
+  handleEditCategoria = (categoria) => {
+    if (this.props.onEditCategoria) {
+      this.props.onEditCategoria(categoria);
     }
   };
 
@@ -53,7 +53,7 @@ export default class CustomerList extends Component {
         field: "nombre",
         headerName: "Nombre",
         width: isMobile ? 120 : 200,
-        description: "Nombre del cliente",
+        description: "Nombre de la categoría",
         renderCell: (params) => {
           return (
             <>
@@ -83,58 +83,57 @@ export default class CustomerList extends Component {
         },
       },
       {
-        field: "razon_social",
-        headerName: "Razón Social",
-        width: 200,
-        description: "Razón social de la empresa",
+        field: "descripcion",
+        headerName: "Descripción",
+        width: isMobile ? 150 : 300,
+        description: "Descripción de la categoría",
+        renderCell: (params) => (
+          <Typography 
+            variant={isMobile ? "caption" : "body2"}
+            sx={{ 
+              fontSize: isMobile ? '0.7rem' : 'inherit',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap'
+            }}
+          >
+            {params.row.descripcion}
+          </Typography>
+        ),
       },
       {
-        field: "nit",
-        headerName: "NIT",
-        width: 150,
-        description: "Número de Identificación Tributaria",
-      },
-      {
-        field: "representante_legal",
-        headerName: "Representante Legal",
-        width: 180,
-        description: "Nombre del representante legal",
-      },
-      {
-        field: "email",
-        headerName: "Correo Electrónico",
-        width: 200,
-        description: "Correo electrónico del cliente",
-      },
-      {
-        field: "telefono",
-        headerName: "Teléfono",
-        width: 150,
-        description: "Número de teléfono",
-      },
-      {
-        field: "encargado",
-        headerName: "Encargado",
-        width: 150,
-        description: "Nombre de la persona encargada",
-      },
-      {
-        field: "tel_encargado",
-        headerName: "Tel. Encargado",
-        width: 150,
-        description: "Teléfono de la persona encargada",
-      },
-      {
-        field: "direccion",
-        headerName: "Dirección",
-        width: 250,
-        description: "Dirección del cliente",
+        field: "actions",
+        headerName: "Acciones",
+        width: isMobile ? 100 : 150,
+        sortable: false,
+        renderCell: (params) => (
+          <Box sx={{ display: 'flex', gap: isMobile ? 0.5 : 1 }}>
+            <IconButton
+              size={isMobile ? "small" : "medium"}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.handleRowClick(params);
+              }}
+            >
+              <Visibility fontSize={isMobile ? "small" : "medium"} />
+            </IconButton>
+            <IconButton
+              size={isMobile ? "small" : "medium"}
+              onClick={(e) => {
+                e.stopPropagation();
+                this.handleEditCategoria(params.row);
+              }}
+            >
+              <Edit fontSize={isMobile ? "small" : "medium"} />
+            </IconButton>
+          </Box>
+        ),
       },
     ];
 
-    const rows = customers.map(customer => ({
-      ...customer,
-      id: customer.idCliente // DataGrid necesita un campo 'id' único
+    const rows = categorias.map(categoria => ({
+      ...categoria,
+      id: categoria.idCategoria
     }));
 
     // Renderizado responsivo
@@ -150,12 +149,12 @@ export default class CustomerList extends Component {
               textAlign: 'center'
             }}
           >
-            Gestión de Clientes
+            Gestión de Categorías
           </Typography>
           
           <Grid container spacing={2}>
-            {customers.map((customer) => (
-              <Grid item xs={12} key={customer.idCliente}>
+            {categorias.map((categoria) => (
+              <Grid item xs={12} key={categoria.idCategoria}>
                 <Card 
                   sx={{ 
                     cursor: 'pointer',
@@ -165,12 +164,12 @@ export default class CustomerList extends Component {
                       transition: 'all 0.2s ease-in-out'
                     }
                   }}
-                  onClick={() => this.handleRowClick({ row: customer })}
+                  onClick={() => this.handleRowClick({ row: categoria })}
                 >
                   <CardContent sx={{ p: 2 }}>
                     <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
                       <Avatar
-                        alt={customer.nombre}
+                        alt={categoria.nombre}
                         variant="square"
                         sx={{ 
                           borderRadius: 1, 
@@ -179,24 +178,18 @@ export default class CustomerList extends Component {
                           mr: 2
                         }}
                       >
-                        {customer.nombre.charAt(0)}
+                        {categoria.nombre.charAt(0)}
                       </Avatar>
                       <Typography variant="h6" fontWeight="bold">
-                        {customer.nombre}
+                        {categoria.nombre}
                       </Typography>
                     </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      <strong>Razón Social:</strong> {customer.razon_social}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      <strong>NIT:</strong> {customer.nit}
-                    </Typography>
                     <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      <strong>Email:</strong> {customer.email}
+                      {categoria.descripcion}
                     </Typography>
                     <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Chip 
-                        label={`ID: ${customer.idCliente}`} 
+                        label={`ID: ${categoria.idCategoria}`} 
                         size="small" 
                         variant="outlined" 
                       />
@@ -205,7 +198,7 @@ export default class CustomerList extends Component {
                           size="small"
                           onClick={(e) => {
                             e.stopPropagation();
-                            this.handleRowClick({ row: customer });
+                            this.handleRowClick({ row: categoria });
                           }}
                         >
                           <Visibility fontSize="small" />
@@ -214,7 +207,7 @@ export default class CustomerList extends Component {
                           size="small"
                           onClick={(e) => {
                             e.stopPropagation();
-                            this.handleEditCustomer(customer);
+                            this.handleEditCategoria(categoria);
                           }}
                         >
                           <Edit fontSize="small" />
@@ -250,8 +243,9 @@ export default class CustomerList extends Component {
             textAlign: isTablet ? 'center' : 'left'
           }}
         >
-          Gestión de Clientes
+          Gestión de Categorías
         </Typography>
+        
         <DataGrid
           sx={{
             borderLeft: 0,
@@ -286,11 +280,11 @@ export default class CustomerList extends Component {
           onRowClick={this.handleRowClick}
         />
         
-        <CustomerDetailsModal
+        <CategoriaDetailsModal
           open={this.state.modalOpen}
           onClose={this.handleCloseModal}
-          customer={this.state.selectedCustomer}
-          onEdit={this.handleEditCustomer}
+          categoria={this.state.selectedCategoria}
+          onEdit={this.handleEditCategoria}
           isMobile={isMobile}
         />
       </Box>
