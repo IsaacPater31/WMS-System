@@ -86,7 +86,7 @@ export default function MovementsChart() {
       opacity: 0.8,
       type: "solid"
     },
-    colors: ["#4CAF50", "#F44336", "#FF9800", "#2196F3"],
+    colors: ["#1976d2", "#388e3c", "#f57c00", "#757575"],
     xaxis: {
       categories: [...new Set(movimientos.map(m => m.fecha_movimiento))].sort().slice(-7).map(date => 
         new Date(date).toLocaleDateString('es-ES', { day: '2-digit', month: '2-digit' })

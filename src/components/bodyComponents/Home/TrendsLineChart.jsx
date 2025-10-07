@@ -152,7 +152,7 @@ export default function TrendsLineChart() {
         }
       }
     ],
-    colors: ["#2196F3", "#4CAF50", "#F44336"],
+    colors: ["#1976d2", "#388e3c", "#f57c00"],
     tooltip: {
       shared: true,
       intersect: false,

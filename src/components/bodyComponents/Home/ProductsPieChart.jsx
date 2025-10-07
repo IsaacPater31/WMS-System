@@ -91,7 +91,7 @@ export default function ProductsPieChart() {
         }
       }
     },
-    colors: ["#4CAF50", "#2196F3", "#FF9800", "#F44336", "#9C27B0", "#607D8B", "#795548", "#E91E63"],
+    colors: ["#1976d2", "#388e3c", "#f57c00", "#757575", "#42a5f5", "#66bb6a", "#ffb74d", "#90a4ae"],
     dataLabels: {
       enabled: true,
       formatter: function (val, opts) {

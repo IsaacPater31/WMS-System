@@ -1,5 +1,5 @@
 import { Component } from "react";
-import { Avatar, Box, Typography, Chip, Button, IconButton, Tooltip } from "@mui/material";
+import { Avatar, Box, Typography, Chip, Button, IconButton, Tooltip, Grid, Card, CardContent } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
 import { Inventory, PictureAsPdf, Visibility } from "@mui/icons-material";
 // import { guiasCarga } from "./GuiasCarga"; // Ya no necesitamos importar los datos estáticos
@@ -78,9 +78,10 @@ export default class GuiaCargaList extends Component {
   };
 
   render() {
-  const width = this.state.windowWidth;
-  const isTablet = width >= 768 && width < 1024;
-  const isDesktop = width >= 1024;
+    const width = this.state.windowWidth;
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
+    const isDesktop = width >= 1024;
 
     const columns = [
       {
@@ -250,18 +251,99 @@ export default class GuiaCargaList extends Component {
       id: guia.idGuia // DataGrid necesita un campo 'id' único
     }));
 
+    // Renderizado responsivo para móvil
+    if (isMobile) {
+      return (
+        <Box sx={{ width: '100%', p: 1 }}>
+          <Typography 
+            variant="h6" 
+            sx={{ 
+              mb: 2, 
+              fontWeight: "bold", 
+              color: "primary.main",
+              textAlign: 'center'
+            }}
+          >
+            Gestión de Guías de Carga
+          </Typography>
+          
+          {/* Vista simplificada para móvil */}
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+            {guias.map((guia) => (
+              <Box
+                key={guia.idGuia}
+                sx={{
+                  p: 2,
+                  borderRadius: 2,
+                  border: '1px solid #e0e0e0',
+                  backgroundColor: 'white',
+                  cursor: 'pointer',
+                  '&:hover': {
+                    boxShadow: 2,
+                    transform: 'translateY(-1px)',
+                    transition: 'all 0.2s ease-in-out'
+                  }
+                }}
+                onClick={() => this.handleRowClick({ row: guia })}
+              >
+                <Typography variant="h6" fontWeight="bold" sx={{ mb: 1 }}>
+                  {guia.factura_comercial}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  <strong>Cliente:</strong> {guia.cliente?.nombre || "N/A"}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                  <strong>Fecha:</strong> {this.formatDate(guia.fecha_ingreso)}
+                </Typography>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                  <strong>Unidades:</strong> {guia.unidades_carga} carga, {guia.unidades_producto} producto
+                </Typography>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Chip 
+                    label={`${guia.contenedores} contenedores`} 
+                    size="small" 
+                    variant="outlined" 
+                  />
+                  <Button
+                    size="small"
+                    variant="outlined"
+                    color="primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      this.handleOpenUnidades(guia);
+                    }}
+                  >
+                    Ver Unidades
+                  </Button>
+                </Box>
+              </Box>
+            ))}
+          </Box>
+        </Box>
+      );
+    }
+
     return (
       <Box
         sx={{
-          margin: 3,
+          margin: isTablet ? 1 : 3,
           bgcolor: "white",
           borderRadius: 2,
-          padding: 3,
+          padding: isTablet ? 2 : 3,
           height: "100%",
+          overflow: "hidden",
           overflowX: 'auto',
         }}
       >
-        <Typography variant="h5" sx={{ mb: 3, fontWeight: "bold", color: "primary.main" }}>
+        <Typography 
+          variant={isTablet ? "h6" : "h5"} 
+          sx={{ 
+            mb: 3, 
+            fontWeight: "bold", 
+            color: "primary.main",
+            textAlign: isTablet ? 'center' : 'left'
+          }}
+        >
           Gestión de Guías de Carga
         </Typography>
         <DataGrid
@@ -269,12 +351,15 @@ export default class GuiaCargaList extends Component {
             borderLeft: 0,
             borderRight: 0,
             borderRadius: 0,
+            fontSize: isTablet ? '0.875rem' : 'inherit',
             "& .MuiDataGrid-cell": {
               borderBottom: "1px solid #e0e0e0",
+              fontSize: isTablet ? '0.875rem' : 'inherit',
             },
             "& .MuiDataGrid-columnHeaders": {
               backgroundColor: "#f5f5f5",
               borderBottom: "2px solid #e0e0e0",
+              fontSize: isTablet ? '0.875rem' : 'inherit',
             },
             "& .MuiDataGrid-row:hover": {
               backgroundColor: "#f5f5f5",

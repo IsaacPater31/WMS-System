@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import BodegaList from "./BodegaList";
 import BodegaForm from "./BodegaForm";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Add } from "@mui/icons-material";
 
 export default class Bodega extends Component {
@@ -47,43 +47,89 @@ export default class Bodega extends Component {
 
   render() {
     return (
-      <Box sx={{ m: 0, p: 3, width: "100%" }}>
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          mb: 3 
-        }}>
-          <Typography variant="h4" fontWeight="bold" color="primary.main">
-            Bodegas
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add />}
-            onClick={this.handleAddBodega}
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              px: 3,
-              py: 1,
-            }}
-          >
-            Nueva Bodega
-          </Button>
-        </Box>
-        
-        <BodegaList 
-          onEditBodega={this.handleEditBodega}
-        />
-        
-        <BodegaForm
-          open={this.state.formOpen}
-          onClose={this.handleCloseForm}
-          bodega={this.state.editingBodega}
-          onSave={this.handleSaveBodega}
-        />
-      </Box>
+      <ResponsiveBodega 
+        onAddBodega={this.handleAddBodega}
+        onEditBodega={this.handleEditBodega}
+        onCloseForm={this.handleCloseForm}
+        onSaveBodega={this.handleSaveBodega}
+        formOpen={this.state.formOpen}
+        editingBodega={this.state.editingBodega}
+      />
     );
   }
+}
+
+// Componente funcional para manejar la responsividad
+function ResponsiveBodega({ 
+  onAddBodega, 
+  onEditBodega, 
+  onCloseForm, 
+  onSaveBodega, 
+  formOpen, 
+  editingBodega 
+}) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
+
+  return (
+    <Box sx={{ 
+      m: 0, 
+      p: isMobile ? 1 : 3, 
+      width: "100%",
+      maxWidth: "100%",
+      overflow: "hidden"
+    }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between', 
+        alignItems: isMobile ? 'stretch' : 'center', 
+        mb: 3,
+        gap: isMobile ? 2 : 0
+      }}>
+        <Typography 
+          variant={isMobile ? "h5" : "h4"} 
+          fontWeight="bold" 
+          color="primary.main"
+          sx={{ 
+            textAlign: isMobile ? 'center' : 'left',
+            mb: isMobile ? 1 : 0
+          }}
+        >
+          Bodegas
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          onClick={onAddBodega}
+          sx={{
+            borderRadius: 2,
+            textTransform: 'none',
+            px: isMobile ? 2 : 3,
+            py: isMobile ? 1.5 : 1,
+            width: isMobile ? '100%' : 'auto',
+            minWidth: isMobile ? 'auto' : 150
+          }}
+        >
+          Nueva Bodega
+        </Button>
+      </Box>
+      
+      <BodegaList 
+        onEditBodega={onEditBodega}
+        isMobile={isMobile}
+        isTablet={isTablet}
+      />
+      
+      <BodegaForm
+        open={formOpen}
+        onClose={onCloseForm}
+        bodega={editingBodega}
+        onSave={onSaveBodega}
+        isMobile={isMobile}
+      />
+    </Box>
+  );
 }

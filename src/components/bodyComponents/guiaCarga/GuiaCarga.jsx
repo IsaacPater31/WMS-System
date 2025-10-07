@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import GuiaCargaList from "./GuiaCargaList";
 import GuiaCargaForm from "./GuiaCargaForm";
-import { Box, Button, Typography } from "@mui/material";
+import { Box, Button, Typography, useTheme, useMediaQuery } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { guiasCarga } from "./GuiasCarga";
 import { customers } from "../customer/Customers";
@@ -88,44 +88,92 @@ export default class GuiaCarga extends Component {
 
   render() {
     return (
-      <Box sx={{ m: 0, p: 3, width: "100%" }}>
-        <Box sx={{ 
-          display: 'flex', 
-          justifyContent: 'space-between', 
-          alignItems: 'center', 
-          mb: 3 
-        }}>
-          <Typography variant="h4" fontWeight="bold" color="primary.main">
-            Guías de Carga
-          </Typography>
-          <Button
-            variant="contained"
-            color="primary"
-            startIcon={<Add />}
-            onClick={this.handleAddGuia}
-            sx={{
-              borderRadius: 2,
-              textTransform: 'none',
-              px: 3,
-              py: 1,
-            }}
-          >
-            Nueva Guía
-          </Button>
-        </Box>
-        
-        <GuiaCargaList 
-          onEditGuia={this.handleEditGuia}
-          guias={this.state.guias}
-        />
-        
-        <GuiaCargaForm
-          open={this.state.formOpen}
-          onClose={this.handleCloseForm}
-          guia={this.state.editingGuia}
-          onSave={this.handleSaveGuia}
-        />
-      </Box>
+      <ResponsiveGuiaCarga 
+        onAddGuia={this.handleAddGuia}
+        onEditGuia={this.handleEditGuia}
+        onCloseForm={this.handleCloseForm}
+        onSaveGuia={this.handleSaveGuia}
+        formOpen={this.state.formOpen}
+        editingGuia={this.state.editingGuia}
+        guias={this.state.guias}
+      />
     );
   }
+}
+
+// Componente funcional para manejar la responsividad
+function ResponsiveGuiaCarga({ 
+  onAddGuia, 
+  onEditGuia, 
+  onCloseForm, 
+  onSaveGuia, 
+  formOpen, 
+  editingGuia,
+  guias
+}) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
+
+  return (
+    <Box sx={{ 
+      m: 0, 
+      p: isMobile ? 1 : 3, 
+      width: "100%",
+      maxWidth: "100%",
+      overflow: "hidden"
+    }}>
+      <Box sx={{ 
+        display: 'flex', 
+        flexDirection: isMobile ? 'column' : 'row',
+        justifyContent: 'space-between', 
+        alignItems: isMobile ? 'stretch' : 'center', 
+        mb: 3,
+        gap: isMobile ? 2 : 0
+      }}>
+        <Typography 
+          variant={isMobile ? "h5" : "h4"} 
+          fontWeight="bold" 
+          color="primary.main"
+          sx={{ 
+            textAlign: isMobile ? 'center' : 'left',
+            mb: isMobile ? 1 : 0
+          }}
+        >
+          Guías de Carga
+        </Typography>
+        <Button
+          variant="contained"
+          color="primary"
+          startIcon={<Add />}
+          onClick={onAddGuia}
+          sx={{
+            borderRadius: 2,
+            textTransform: 'none',
+            px: isMobile ? 2 : 3,
+            py: isMobile ? 1.5 : 1,
+            width: isMobile ? '100%' : 'auto',
+            minWidth: isMobile ? 'auto' : 150
+          }}
+        >
+          Nueva Guía
+        </Button>
+      </Box>
+      
+      <GuiaCargaList 
+        onEditGuia={onEditGuia}
+        guias={guias}
+        isMobile={isMobile}
+        isTablet={isTablet}
+      />
+      
+      <GuiaCargaForm
+        open={formOpen}
+        onClose={onCloseForm}
+        guia={editingGuia}
+        onSave={onSaveGuia}
+        isMobile={isMobile}
+      />
+    </Box>
+  );
 }

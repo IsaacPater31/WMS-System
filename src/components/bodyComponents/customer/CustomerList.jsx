@@ -68,7 +68,73 @@ export default class CustomerList extends Component {
     const isTablet = width >= 768 && width < 1024;
     const isDesktop = width >= 1024; // target: responsive behavior for desktop
 
-    const columns = [
+    // Columnas responsivas según el tamaño de pantalla
+    const columns = isTablet ? [
+      // Columnas simplificadas para tablet
+      {
+        field: "nombre",
+        headerName: "Nombre",
+        minWidth: 140,
+        flex: 1.2,
+        description: "Nombre del cliente",
+        renderCell: (params) => {
+          return (
+            <>
+              <Avatar
+                alt={params.row.nombre}
+                variant="square"
+                sx={{ 
+                  borderRadius: 1, 
+                  width: 25, 
+                  height: 25,
+                  fontSize: '0.75rem'
+                }}
+              >
+                {params.row.nombre.charAt(0)}
+              </Avatar>
+              <Typography 
+                variant="caption" 
+                sx={{ 
+                  mx: 1,
+                  fontSize: '0.75rem'
+                }}
+              >
+                {params.row.nombre}
+              </Typography>
+            </>
+          );
+        },
+      },
+      {
+        field: "razon_social",
+        headerName: "Razón Social",
+        minWidth: 160,
+        flex: 1.3,
+        description: "Razón social de la empresa",
+      },
+      {
+        field: "nit",
+        headerName: "NIT",
+        minWidth: 100,
+        flex: 0.8,
+        description: "Número de Identificación Tributaria",
+      },
+      {
+        field: "email",
+        headerName: "Email",
+        minWidth: 160,
+        flex: 1.2,
+        description: "Correo electrónico del cliente",
+      },
+      {
+        field: "telefono",
+        headerName: "Teléfono",
+        minWidth: 110,
+        flex: 0.8,
+        description: "Número de teléfono",
+      },
+    ] : [
+      // Columnas completas para desktop
       {
         field: "nombre",
         headerName: "Nombre",
@@ -83,18 +149,18 @@ export default class CustomerList extends Component {
                 variant="square"
                 sx={{ 
                   borderRadius: 1, 
-                  width: isMobile ? 25 : 30, 
-                  height: isMobile ? 25 : 30,
-                  fontSize: isMobile ? '0.75rem' : '1rem'
+                  width: 30, 
+                  height: 30,
+                  fontSize: '1rem'
                 }}
               >
                 {params.row.nombre.charAt(0)}
               </Avatar>
               <Typography 
-                variant={isMobile ? "caption" : "subtitle2"} 
+                variant="subtitle2" 
                 sx={{ 
-                  mx: isMobile ? 1 : 3,
-                  fontSize: isMobile ? '0.75rem' : 'inherit'
+                  mx: 3,
+                  fontSize: 'inherit'
                 }}
               >
                 {params.row.nombre}
@@ -182,79 +248,78 @@ export default class CustomerList extends Component {
             Gestión de Clientes
           </Typography>
           
-          <Grid container spacing={2}>
+          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
             {customers.map((customer) => (
-              <Grid item xs={12} key={customer.idCliente}>
-                <Card 
-                  sx={{ 
-                    cursor: 'pointer',
-                    '&:hover': {
-                      boxShadow: 3,
-                      transform: 'translateY(-2px)',
-                      transition: 'all 0.2s ease-in-out'
-                    }
-                  }}
-                  onClick={() => this.handleRowClick({ row: customer })}
-                >
-                  <CardContent sx={{ p: 2 }}>
-                    <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
-                      <Avatar
-                        alt={customer.nombre}
-                        variant="square"
-                        sx={{ 
-                          borderRadius: 1, 
-                          width: 40, 
-                          height: 40,
-                          mr: 2
+              <Card 
+                key={customer.idCliente}
+                sx={{ 
+                  cursor: 'pointer',
+                  '&:hover': {
+                    boxShadow: 3,
+                    transform: 'translateY(-2px)',
+                    transition: 'all 0.2s ease-in-out'
+                  }
+                }}
+                onClick={() => this.handleRowClick({ row: customer })}
+              >
+                <CardContent sx={{ p: 2 }}>
+                  <Box sx={{ display: 'flex', alignItems: 'center', mb: 1 }}>
+                    <Avatar
+                      alt={customer.nombre}
+                      variant="square"
+                      sx={{ 
+                        borderRadius: 1, 
+                        width: 40, 
+                        height: 40,
+                        mr: 2
+                      }}
+                    >
+                      {customer.nombre.charAt(0)}
+                    </Avatar>
+                    <Typography variant="h6" fontWeight="bold">
+                      {customer.nombre}
+                    </Typography>
+                  </Box>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <strong>Razón Social:</strong> {customer.razon_social}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                    <strong>NIT:</strong> {customer.nit}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                    <strong>Email:</strong> {customer.email}
+                  </Typography>
+                  <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Chip 
+                      label={`ID: ${customer.idCliente}`} 
+                      size="small" 
+                      variant="outlined" 
+                    />
+                    <Box sx={{ display: 'flex', gap: 1 }}>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          this.handleRowClick({ row: customer });
                         }}
                       >
-                        {customer.nombre.charAt(0)}
-                      </Avatar>
-                      <Typography variant="h6" fontWeight="bold">
-                        {customer.nombre}
-                      </Typography>
+                        <Visibility fontSize="small" />
+                      </IconButton>
+                      <IconButton
+                        size="small"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          this.handleEditCustomer(customer);
+                        }}
+                      >
+                        <Edit fontSize="small" />
+                      </IconButton>
                     </Box>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      <strong>Razón Social:</strong> {customer.razon_social}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
-                      <strong>NIT:</strong> {customer.nit}
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
-                      <strong>Email:</strong> {customer.email}
-                    </Typography>
-                    <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Chip 
-                        label={`ID: ${customer.idCliente}`} 
-                        size="small" 
-                        variant="outlined" 
-                      />
-                      <Box sx={{ display: 'flex', gap: 1 }}>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            this.handleRowClick({ row: customer });
-                          }}
-                        >
-                          <Visibility fontSize="small" />
-                        </IconButton>
-                        <IconButton
-                          size="small"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            this.handleEditCustomer(customer);
-                          }}
-                        >
-                          <Edit fontSize="small" />
-                        </IconButton>
-                      </Box>
-                    </Box>
-                  </CardContent>
-                </Card>
-              </Grid>
+                  </Box>
+                </CardContent>
+              </Card>
             ))}
-          </Grid>
+          </Box>
         </Box>
       );
     }

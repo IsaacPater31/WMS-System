@@ -127,21 +127,21 @@ function Dashboard() {
       title: "Productos Activos", 
       value: totalProductos.toString(), 
       icon: <Inventory />, 
-      color: "#388e3c",
+      color: "#1976d2",
       subtitle: "Productos en inventario"
     },
     { 
       title: "Guías de Carga", 
       value: totalGuiasCarga.toString(), 
       icon: <LocalShipping />, 
-      color: "#f57c00",
+      color: "#1976d2",
       subtitle: "Guías procesadas"
     },
     { 
       title: "Movimientos Hoy", 
       value: movimientosHoy.toString(), 
       icon: <TrendingUp />, 
-      color: "#d32f2f",
+      color: "#1976d2",
       subtitle: "Actividad del día"
     }
   ];
@@ -468,10 +468,10 @@ function Dashboard() {
                               width: 4, 
                               height: 4, 
                               borderRadius: '50%', 
-                              backgroundColor: '#28a745' 
+                              backgroundColor: '#388e3c' 
                             }} />
                             <Typography variant="caption" sx={{ 
-                              color: '#28a745',
+                              color: '#388e3c',
                               fontWeight: '600',
                               fontSize: '0.7rem'
                             }}>
@@ -483,10 +483,10 @@ function Dashboard() {
                               width: 4, 
                               height: 4, 
                               borderRadius: '50%', 
-                              backgroundColor: '#ffc107' 
+                              backgroundColor: '#f57c00' 
                             }} />
                             <Typography variant="caption" sx={{ 
-                              color: '#ffc107',
+                              color: '#f57c00',
                               fontWeight: '600',
                               fontSize: '0.7rem'
                             }}>
@@ -509,7 +509,7 @@ function Dashboard() {
                       }}>
                         <Typography variant="body1" sx={{ 
                           fontWeight: '700',
-                          color: '#007AFF',
+                          color: '#1976d2',
                           lineHeight: 1,
                           fontSize: '0.9rem'
                         }}>
@@ -535,10 +535,10 @@ function Dashboard() {
                           width: 4, 
                           height: 4, 
                           borderRadius: '50%', 
-                          backgroundColor: '#007AFF' 
+                          backgroundColor: '#1976d2' 
                         }} />
                         <Typography variant="caption" sx={{ 
-                          color: '#007AFF',
+                          color: '#1976d2',
                           fontWeight: '500',
                           fontSize: '0.65rem'
                         }}>
@@ -646,7 +646,7 @@ function Dashboard() {
                       width: 40, 
                       height: 40, 
                       borderRadius: '10px',
-                      background: 'linear-gradient(135deg, #007AFF 0%, #0056CC 100%)',
+                      background: 'linear-gradient(135deg, #1976d2 0%, #1565c0 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -688,7 +688,7 @@ function Dashboard() {
                       width: 40, 
                       height: 40, 
                       borderRadius: '10px',
-                      background: 'linear-gradient(135deg, #28a745 0%, #1e7e34 100%)',
+                      background: 'linear-gradient(135deg, #388e3c 0%, #2e7d32 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -730,7 +730,7 @@ function Dashboard() {
                       width: 40, 
                       height: 40, 
                       borderRadius: '10px',
-                      background: 'linear-gradient(135deg, #ffc107 0%, #e0a800 100%)',
+                      background: 'linear-gradient(135deg, #f57c00 0%, #ef6c00 100%)',
                       display: 'flex',
                       alignItems: 'center',
                       justifyContent: 'center'
@@ -768,18 +768,19 @@ function Dashboard() {
               variant="contained" 
               startIcon={<Add />} 
               sx={{
-                background: '#007AFF',
+                background: '#1976d2',
                 borderRadius: '12px',
                 px: 3,
                 py: 1.5,
                 textTransform: 'none',
                 fontSize: '16px',
                 fontWeight: '500',
-                boxShadow: '0 2px 8px rgba(0, 122, 255, 0.2)',
+                boxShadow: '0 2px 8px rgba(25, 118, 210, 0.2)',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
+                  background: '#1565c0',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 16px rgba(0, 122, 255, 0.3)'
+                  boxShadow: '0 4px 16px rgba(25, 118, 210, 0.3)'
                 }
               }}
             >
@@ -788,21 +789,26 @@ function Dashboard() {
           </Grid>
           <Grid item>
             <Button 
-              variant="contained" 
+              variant="outlined" 
               startIcon={<LocalShipping />} 
               sx={{
-                background: '#FF3B30',
+                borderColor: '#1976d2',
+                color: '#1976d2',
                 borderRadius: '12px',
                 px: 3,
                 py: 1.5,
                 textTransform: 'none',
                 fontSize: '16px',
                 fontWeight: '500',
-                boxShadow: '0 2px 8px rgba(255, 59, 48, 0.2)',
+                borderWidth: '2px',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
+                  borderWidth: '2px',
+                  borderColor: '#1565c0',
+                  color: '#1565c0',
+                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 16px rgba(255, 59, 48, 0.3)'
+                  boxShadow: '0 4px 16px rgba(25, 118, 210, 0.2)'
                 }
               }}
             >
@@ -811,21 +817,26 @@ function Dashboard() {
           </Grid>
           <Grid item>
             <Button 
-              variant="contained" 
+              variant="outlined" 
               startIcon={<Inventory />} 
               sx={{
-                background: '#34C759',
+                borderColor: '#1976d2',
+                color: '#1976d2',
                 borderRadius: '12px',
                 px: 3,
                 py: 1.5,
                 textTransform: 'none',
                 fontSize: '16px',
                 fontWeight: '500',
-                boxShadow: '0 2px 8px rgba(52, 199, 89, 0.2)',
+                borderWidth: '2px',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
+                  borderWidth: '2px',
+                  borderColor: '#1565c0',
+                  color: '#1565c0',
+                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 16px rgba(52, 199, 89, 0.3)'
+                  boxShadow: '0 4px 16px rgba(25, 118, 210, 0.2)'
                 }
               }}
             >
@@ -834,21 +845,26 @@ function Dashboard() {
           </Grid>
           <Grid item>
             <Button 
-              variant="contained" 
+              variant="outlined" 
               startIcon={<TrendingUp />} 
               sx={{
-                background: '#FF9500',
+                borderColor: '#1976d2',
+                color: '#1976d2',
                 borderRadius: '12px',
                 px: 3,
                 py: 1.5,
                 textTransform: 'none',
                 fontSize: '16px',
                 fontWeight: '500',
-                boxShadow: '0 2px 8px rgba(255, 149, 0, 0.2)',
+                borderWidth: '2px',
                 transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
                 '&:hover': {
+                  borderWidth: '2px',
+                  borderColor: '#1565c0',
+                  color: '#1565c0',
+                  backgroundColor: 'rgba(25, 118, 210, 0.04)',
                   transform: 'translateY(-2px)',
-                  boxShadow: '0 4px 16px rgba(255, 149, 0, 0.3)'
+                  boxShadow: '0 4px 16px rgba(25, 118, 210, 0.2)'
                 }
               }}
             >
