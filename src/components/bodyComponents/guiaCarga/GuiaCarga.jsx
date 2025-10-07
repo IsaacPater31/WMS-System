@@ -3,6 +3,8 @@ import GuiaCargaList from "./GuiaCargaList";
 import GuiaCargaForm from "./GuiaCargaForm";
 import { Box, Button, Typography } from "@mui/material";
 import { Add } from "@mui/icons-material";
+import { guiasCarga } from "./GuiasCarga";
+import { customers } from "../customer/Customers";
 
 export default class GuiaCarga extends Component {
   constructor(props) {
@@ -22,7 +24,6 @@ export default class GuiaCarga extends Component {
   loadGuias = () => {
     // En una implementación real, esto sería una llamada a la API
     // Por ahora, usamos los datos estáticos
-    const { guiasCarga } = require('./GuiasCarga');
     this.setState({ guias: guiasCarga });
   };
 
@@ -51,23 +52,12 @@ export default class GuiaCarga extends Component {
     // Aquí se implementaría la lógica para guardar en la base de datos
     console.log("Guardando guía de carga:", guiaData);
     
-    // Importar customers para obtener la información del cliente
-    const { customers } = require('../customer/Customers');
-    
-    console.log("ID del cliente seleccionado:", guiaData.CLIENTE_idCliente);
-    console.log("Tipo del ID:", typeof guiaData.CLIENTE_idCliente);
-    console.log("Customers disponibles:", customers);
-    
     // Encontrar el cliente seleccionado (manejar tanto string como number)
-    const clienteId = parseInt(guiaData.CLIENTE_idCliente);
-    console.log("Cliente ID parseado:", clienteId);
+    const clienteId = parseInt(guiaData.CLIENTE_idCliente, 10);
     const clienteSeleccionado = customers.find(c => c.idCliente === clienteId);
-    
-    console.log("Cliente encontrado:", clienteSeleccionado);
-    
-    // Verificar que se encontró el cliente
+
     if (!clienteSeleccionado) {
-      console.error('Cliente no encontrado:', guiaData.CLIENTE_idCliente);
+      // Si no encontramos el cliente no continuamos
       return;
     }
     

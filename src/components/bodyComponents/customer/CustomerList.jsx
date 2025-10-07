@@ -8,11 +8,9 @@ import {
   CardContent,
   Grid,
   IconButton,
-  useTheme,
-  useMediaQuery
 } from "@mui/material";
 import { DataGrid } from "@mui/x-data-grid";
-import { Edit, Visibility, Delete } from "@mui/icons-material";
+import { Edit, Visibility } from "@mui/icons-material";
 import { customers } from "./Customers";
 import CustomerDetailsModal from "./CustomerDetailsModal";
 
@@ -22,7 +20,26 @@ export default class CustomerList extends Component {
     this.state = {
       selectedCustomer: null,
       modalOpen: false,
+      windowWidth: typeof window !== 'undefined' ? window.innerWidth : 1280,
     };
+  }
+
+  componentDidMount() {
+    // Listen to resize to enable responsive behavior on desktop sizes
+    this._resizeRunning = false;
+    this._handleResize = () => {
+      if (this._resizeRunning) return;
+      this._resizeRunning = true;
+      window.requestAnimationFrame(() => {
+        this.setState({ windowWidth: window.innerWidth });
+        this._resizeRunning = false;
+      });
+    };
+    window.addEventListener('resize', this._handleResize);
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('resize', this._handleResize);
   }
 
   handleRowClick = (params) => {
@@ -46,13 +63,17 @@ export default class CustomerList extends Component {
   };
 
   render() {
-    const { isMobile, isTablet } = this.props;
-    
+    const width = this.state.windowWidth;
+    const isMobile = width < 768;
+    const isTablet = width >= 768 && width < 1024;
+    const isDesktop = width >= 1024; // target: responsive behavior for desktop
+
     const columns = [
       {
         field: "nombre",
         headerName: "Nombre",
-        width: isMobile ? 120 : 200,
+        minWidth: 160,
+        flex: 1,
         description: "Nombre del cliente",
         renderCell: (params) => {
           return (
@@ -85,49 +106,57 @@ export default class CustomerList extends Component {
       {
         field: "razon_social",
         headerName: "Razón Social",
-        width: 200,
+        minWidth: 180,
+        flex: 1.2,
         description: "Razón social de la empresa",
       },
       {
         field: "nit",
         headerName: "NIT",
-        width: 150,
+        minWidth: 120,
+        flex: 0.8,
         description: "Número de Identificación Tributaria",
       },
       {
         field: "representante_legal",
         headerName: "Representante Legal",
-        width: 180,
+        minWidth: 160,
+        flex: 1,
         description: "Nombre del representante legal",
       },
       {
         field: "email",
         headerName: "Correo Electrónico",
-        width: 200,
+        minWidth: 180,
+        flex: 1.2,
         description: "Correo electrónico del cliente",
       },
       {
         field: "telefono",
         headerName: "Teléfono",
-        width: 150,
+        minWidth: 130,
+        flex: 0.8,
         description: "Número de teléfono",
       },
       {
         field: "encargado",
         headerName: "Encargado",
-        width: 150,
+        minWidth: 140,
+        flex: 0.9,
         description: "Nombre de la persona encargada",
       },
       {
         field: "tel_encargado",
         headerName: "Tel. Encargado",
-        width: 150,
+        minWidth: 140,
+        flex: 0.8,
         description: "Teléfono de la persona encargada",
       },
       {
         field: "direccion",
         headerName: "Dirección",
-        width: 250,
+        minWidth: 220,
+        flex: 1.4,
         description: "Dirección del cliente",
       },
     ];
@@ -137,8 +166,8 @@ export default class CustomerList extends Component {
       id: customer.idCliente // DataGrid necesita un campo 'id' único
     }));
 
-    // Renderizado responsivo
-    if (isMobile) {
+  // Renderizado responsivo (mobile / tablet handled, but main focus is desktop)
+  if (isMobile) {
       return (
         <Box sx={{ width: '100%', p: 1 }}>
           <Typography 
@@ -238,7 +267,9 @@ export default class CustomerList extends Component {
           borderRadius: 2,
           padding: isTablet ? 2 : 3,
           height: "100%",
-          overflow: "hidden"
+          overflow: "hidden",
+          // allow horizontal shrink on narrower desktop widths
+          overflowX: 'auto'
         }}
       >
         <Typography 
@@ -276,10 +307,10 @@ export default class CustomerList extends Component {
           columns={columns}
           initialState={{
             pagination: {
-              paginationModel: { page: 0, pageSize: isMobile ? 5 : isTablet ? 8 : 10 },
+              paginationModel: { page: 0, pageSize: isDesktop ? (width >= 1280 ? 15 : 10) : isTablet ? 8 : 5 },
             },
           }}
-          pageSizeOptions={isMobile ? [5, 10] : isTablet ? [8, 15] : [10, 15, 20, 30]}
+          pageSizeOptions={isDesktop ? [10, 15, 20] : isTablet ? [8, 15] : [5, 10]}
           rowSelection={false}
           disableRowSelectionOnClick
           autoHeight
